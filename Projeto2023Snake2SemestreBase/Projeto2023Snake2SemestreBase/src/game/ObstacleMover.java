@@ -29,6 +29,7 @@ public class ObstacleMover extends Thread {
 			try {
 				BoardPosition pos=board.getRandomPosition();
 				move(pos);
+				
 				//obstacle.decrementRemainingMoves();
 				board.setChanged();
 				System.out.println(obstacle.getRemainingMoves());
@@ -46,12 +47,14 @@ public class ObstacleMover extends Thread {
 	protected void move(BoardPosition newPos) throws InterruptedException {
 		
 		
-		
+		obstacle.getCells();
 		// clear obstacle list , necessary when resetting obstacles.
 		System.out.println("lista obst: "+board.getObstacles());		
-
-		board.getObstacles().clear();
-		//board.removeGameElement(this.obstacle);
+		board.getObstacles().removeFirst();
+		
+		
+		//board.getObstacles().clear();
+	//	board.removeGameElement(this.obstacle);
 
 		
 		board.setChanged();

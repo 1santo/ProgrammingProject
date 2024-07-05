@@ -11,7 +11,7 @@ public class Goal extends GameElement  {
 	public static final int MAX_VALUE=10;
 	private int random = ThreadLocalRandom.current().nextInt(1, 10);//
 	public Goal( Board board2, int value) {
-		this.board = board2;
+		super(board2);
 		this.value=9;//
 	}
 	public int getValue() {
@@ -40,6 +40,11 @@ public class Goal extends GameElement  {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+	}
+	@Override
+	protected void doInitialPositioning() {
+		// TODO Auto-generated method stub
 		
 	}
 	

@@ -106,36 +106,42 @@ public class AutomaticSnake extends Snake {
 	@Override
 	protected void move(Cell newCell) throws InterruptedException {//
 		
-		
-		Cell cellWithHead= getCells().getFirst();
-		Cell smallest = cellWithHead.compareTo(newCell)<0 ? cellWithHead : newCell; //condition ? value_if_true : value_if_false;
-		Cell biggest = cellWithHead.compareTo(newCell)<0 ? newCell : cellWithHead;
-		smallest.getLock().lock();
 		try {
-			biggest.getLock().lock();
-				try {
-					
-					if(snakecells.size()>=getSize()) { //verifica tam da cobra so tira se for maior
-						if(!snakecells.isEmpty()) {
-							Cell last = snakecells.getLast();
-							last.release();				
-								
+			Cell cellWithHead= getCells().getFirst();
+			
+			Cell smallest = cellWithHead.compareTo(newCell)<0 ? cellWithHead : newCell; //condition ? value_if_true : value_if_false;
+			Cell biggest = cellWithHead.compareTo(newCell)<0 ? newCell : cellWithHead;
+			
+			smallest.getLock().lock();
+			try {
+				biggest.getLock().lock();
+					try {
+						
+						if(snakecells.size()>=getSize()) { //verifica tam da cobra so tira se for maior
+							if(!snakecells.isEmpty()) {
+								Cell last = snakecells.getLast();
+								last.release();				
+									
+							}
 						}
+						
+						//so pode mover-se se conseguir adquirir os dois cadeados
+						//pq imaginemos q a cobra ainda ficou la presa atras...
+						newCell.request(this); //q remove a cauda e interage com elementos
+						
+						
+					}finally {
+						biggest.getLock().unlock();
 					}
 					
-					//so pode mover-se se conseguir adquirir os dois cadeados
-					//pq imaginemos q a cobra ainda ficou la presa atras...
-					newCell.request(this); //q remove a cauda e interage com elementos
-					
-					
-				}finally {
-					biggest.getLock().unlock();
-				}
-				
-		}finally {
-			smallest.getLock().unlock();
-		}
+			}finally {
+				smallest.getLock().unlock();
+			}
 		
-	}
+			}catch (Exception e) {
+		System.out.println("wait till snake has head?");
+		
+		}
 	
+	}
 }

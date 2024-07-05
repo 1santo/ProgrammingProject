@@ -11,12 +11,10 @@ public class Obstacle extends GameElement {
 	public static final int NUM_MOVES=3;
 	static final int OBSTACLE_MOVE_INTERVAL = 400;
 	private int remainingMoves=NUM_MOVES;
-	private Board board;
 	private BoardPosition pos;//
 	
 	public Obstacle(Board board2) {
-		super();
-		this.board = board2;
+		super(board2);
 	}
 	
 	public int getRemainingMoves() {
@@ -33,7 +31,8 @@ public class Obstacle extends GameElement {
 	
 	
 	//
-public void doInitialPositioning() {
+	@Override
+	public void doInitialPositioning() {
 		
 		pos=board.getRandomPosition();
 		System.out.println(this+" is obstacle em: "+ pos+" | classObstacle");
@@ -55,12 +54,12 @@ public void doInitialPositioning() {
 
 
 //
-public BoardPosition getPos() {
-	return pos;
-}
-
-public void setPos(BoardPosition newPos) {
-	pos=newPos;
-}
+	public BoardPosition getPos() {
+		return pos;
+	}
+	
+	public void setPos(BoardPosition newPos) {
+		pos=newPos;
+	}
 
 }

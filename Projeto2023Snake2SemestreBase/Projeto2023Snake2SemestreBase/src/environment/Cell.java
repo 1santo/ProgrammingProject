@@ -135,6 +135,7 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 		try {
 			while(isOcupied() || isOcupiedByGoal()) cellDeoccupied.await();
 				gameElement=obstacle;
+				gameElement.getCells().addFirst(this);
 				//obstacle.
 				//cellOccupiedTemp.signalAll();
 		}finally {

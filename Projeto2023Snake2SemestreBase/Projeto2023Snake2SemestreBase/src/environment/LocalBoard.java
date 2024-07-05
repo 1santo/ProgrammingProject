@@ -17,14 +17,20 @@ import game.AutomaticSnake;
 
 public class LocalBoard extends Board{
 	
-	private static final int NUM_SNAKES = 6;
-	private static final int NUM_OBSTACLES = 25;
-	private static final int NUM_SIMULTANEOUS_MOVING_OBSTACLES = 3;
+	private static final int NUM_SNAKES = 3;
+	private static final int NUM_OBSTACLES = 3;
+	private static final int NUM_SIMULTANEOUS_MOVING_OBSTACLES = 1;
 
-	public LocalBoard() {		
-		// TODO
-		// place game elements and snakes
-
+	public LocalBoard() {		//
+		for (int i = 0; i < NUM_SNAKES; i++) {
+			Snake snake = new AutomaticSnake(i, this);
+			addSnake(snake);	//n esquecer de adicionar a lista do board
+		}
+		
+		for (int i = 0; i < NUM_OBSTACLES; i++) {
+			Obstacle obs = new Obstacle(this);
+			//obs.doInitialPositioning();
+		}
 	}
 
 	// synchronization in cell

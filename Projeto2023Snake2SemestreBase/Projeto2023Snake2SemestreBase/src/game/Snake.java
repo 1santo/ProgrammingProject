@@ -9,7 +9,7 @@ import environment.Board;
 import environment.BoardPosition;
 import environment.Cell;
 
-public abstract class Snake extends Thread {
+public abstract class Snake extends Thread {// em vez de extend meti implement
 
 	private boolean killed = false ;
 	protected LinkedList<Cell> cells = new LinkedList<Cell>();

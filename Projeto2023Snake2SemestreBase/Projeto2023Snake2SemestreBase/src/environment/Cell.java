@@ -13,14 +13,13 @@ public class Cell{
 	private Snake ocuppyingSnake = null;
 	private GameElement gameElement=null;
 
-	public GameElement getGameElement() {
-		return gameElement;
-	}
-
-
-	public Cell(BoardPosition position) {
+		public Cell(BoardPosition position) {
 		super();
 		this.position = position;
+	}
+
+	public GameElement getGameElement() {
+		return gameElement;
 	}
 
 	public BoardPosition getPosition() {

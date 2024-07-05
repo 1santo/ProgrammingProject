@@ -1,6 +1,7 @@
 package game;
 
 import environment.Board;
+import environment.BoardPosition;
 import environment.LocalBoard;
 
 public class Obstacle extends GameElement {
@@ -16,11 +17,34 @@ public class Obstacle extends GameElement {
 	}
 	
 	public int getRemainingMoves() {
-		return remainingMoves;
+		synchronized (this) {//
+			return remainingMoves;
+		}
 	}
 	public void decrementRemainingMoves() {
-		remainingMoves--;
+		synchronized (this) {//
+			remainingMoves--;
+		}
 	}
 
+	//
+public void doInitialPositioning() {
+		
+		BoardPosition pos=board.getRandomPosition();
+		try {
+			board.getCell(pos).setGameElement(this);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//this.setCell(board.getCell(pos));
+		//board.getObstacles().add(this);
+		System.out.println("obst: "+this);	
+		board.addObstacles(this);
+		board.setChanged();	
+
+	}
+	
 
 }

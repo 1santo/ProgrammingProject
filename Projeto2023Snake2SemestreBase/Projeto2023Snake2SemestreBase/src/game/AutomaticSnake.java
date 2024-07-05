@@ -34,8 +34,6 @@ public class AutomaticSnake extends Snake {
 	while (!wasKilled()) {
 		try {
 			System.out.println("board pos: "+this+getBoardPosition());
-			//moveTowardsGoal();
-
 			
 			while(notInMaxGoal) {
 				
@@ -59,36 +57,17 @@ public class AutomaticSnake extends Snake {
 
 	
 	}
-	
-	/*
-	private void moveTowardsGoal() { 
-		Cell head = getCells().getFirst();
-        List<BoardPosition> possiblePositions = getBoard().getNeighboringPositions(head);
-        BoardPosition newPosition = getBoard().selectPositionClosestToGoal(possiblePositions);
-
-        if (newPosition != null) {
-            Cell newCell = getBoard().getCell(newPosition);
-            try {
-                move(newCell);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } else {
-            killSnake();
-        }
-		
-	}*/
 
 	//
 	private Cell nextCell() {
 		Cell head = getCells().getFirst();
 		List<BoardPosition> possiblePositions = getBoard().getNeighboringPositions(head);
 		
-		System.out.println("Posicoes possiveis: " + possiblePositions); 
+		//System.out.println(head+" Posicoes possiveis: " + possiblePositions); 
 		 
 		BoardPosition newPosition = getBoard().selectPositionClosestToGoal(possiblePositions);
 
-		System.out.println("Posicao escolhida: " + newPosition);
+		//System.out.println("Posicao escolhida: " + newPosition);
 		
 		if (newPosition != null) {
 			return getBoard().getCell(newPosition);

@@ -113,12 +113,18 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 		return "" + position;
 	}
 
-	public void setGameElement(GameElement obstacle) {
-		// TODO
+	public void setGameElement(GameElement obstacle) throws InterruptedException {
+		lockC.lock();
+		try {
+			while(isOcupied() || isOcupiedByGoal()) cellOccupied.await();
+				gameElement=obstacle;
+		}finally {
+			lockC.unlock();
+		}
 
 	}
 
-	public boolean isOcupied() { //
+	public boolean isOcupied() { // fiz e n considerei goal ocupado
 		return isOcupiedBySnake() || isOccupiedByKiller() || isOcupiedByObstacle();
 	}
 

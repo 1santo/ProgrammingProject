@@ -98,8 +98,9 @@ public abstract class Board extends Observable {
 		return goal;
 	}
 
-	protected void addObstacles(int numberObstacles) {
-		//TODO
+	public void addObstacles(Obstacle obs) {//mudei pra add Obstacle em vez de int numberObstacles
+		obstacles.add(obs); //pq senao como adicionava o obs a lista???
+															//pus public tbm
 	}
 
 	public LinkedList<Snake> getSnakes() {

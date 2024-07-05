@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 import game.GameElement;
 import game.Goal;
 import game.Obstacle;
+import game.ObstacleMover;
 import game.Snake;
 import server.Server;
 import game.AutomaticSnake;
@@ -35,9 +36,23 @@ public class LocalBoard extends Board{
 
 	// synchronization in cell
 	
-	public void init() {
-		// TODO
-		// Start Threads
+	public void init() { //
+		for(Snake s:snakes) {
+			Thread snakey = new Thread(new AutomaticSnake(s.getIdentification(), this));
+			snakey.start();
+			System.out.print("Snake created: "+s+"at pos: ");
+			
+		}
+		
+		ExecutorService executor = Executors.newFixedThreadPool(NUM_SIMULTANEOUS_MOVING_OBSTACLES);
+		for (int i = 0; i < NUM_OBSTACLES; i++) {
+			for(Obstacle obs: obstacles) {
+				executor.submit(new ObstacleMover(obs,this));
+				
+			}
+		}
+		executor.shutdown();
+		setChanged();
 	}
 
 	

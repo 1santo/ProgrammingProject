@@ -94,6 +94,8 @@ public class Cell{
 		// TODO
 	}
 
-
+	public void requestInitialPositioning() {
+		
+	}
 
 }

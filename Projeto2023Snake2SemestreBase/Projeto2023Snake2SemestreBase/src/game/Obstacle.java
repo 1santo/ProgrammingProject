@@ -22,10 +22,5 @@ public class Obstacle extends GameElement {
 		remainingMoves--;
 	}
 
-	@Override
-	protected void doInitialPositioning() { //try here?
-		// TODO Auto-generated method stub
-		
-	}
 
 }

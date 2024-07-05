@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import game.GameElement;
 import game.Goal;
 import game.Killer;
@@ -24,6 +28,9 @@ public abstract class Board extends Observable {
 	protected LinkedList<Obstacle> obstacles= new LinkedList<Obstacle>(); //
 	protected boolean isFinished;
 
+	private int random = ThreadLocalRandom.current().nextInt(1, 10);//
+	private Lock locksnakes = new ReentrantLock();//teste
+	
 	public Board() {
 		cells = new Cell[WIDTH][HEIGHT];
 		for (int x = 0; x < WIDTH; x++) {
@@ -51,8 +58,10 @@ public abstract class Board extends Observable {
 		this.goalPosition = goalPosition;
 	}
 
-	public void addGameElement(GameElement gameElement) {
-		//TODO
+	public void addGameElement(GameElement gameElement) { //
+		if (gameElement instanceof Obstacle) {
+			obstacles.add((Obstacle) gameElement);
+		}
 	}
 
 	public List<BoardPosition> getNeighboringPositions(Cell cell) {
@@ -93,18 +102,30 @@ public abstract class Board extends Observable {
 	}
 
 	protected Goal addGoal() {
-		Goal goal=new Goal(this);
-		addGameElement( goal);
-		return goal;
+		Goal goal = new Goal(this, random);
+        addGameElement(goal);
+        return goal;
 	}
 
 	public void addObstacles(Obstacle obs) {//mudei pra add Obstacle em vez de int numberObstacles
 		obstacles.add(obs); //pq senao como adicionava o obs a lista???
 															//pus public tbm
 	}
+	
+	protected void addObstacles(int numberObstacles) {
+		for (int i = 0; i < numberObstacles; i++) {
+			Obstacle obstacle = new Obstacle(this);
+			addGameElement(obstacle);
+		}
+	}
 
 	public LinkedList<Snake> getSnakes() {
-		return snakes;
+		locksnakes.lock();
+		try {
+			return snakes;
+		}finally { //pra garantir q dou unlock por um try smp no q ta a ser feito
+			locksnakes.unlock();
+		}
 	}
 
 
@@ -114,15 +135,22 @@ public abstract class Board extends Observable {
 		notifyObservers();
 	}
 
-	public void moveObstacle(Obstacle obstacle) {
+	public void moveObstacle(Obstacle obstacle) throws InterruptedException { //
 		//TODO
-		
+		List<BoardPosition> possiblePositions = getNeighboringPositions(getCell(obstacle.getPos()));
+        BoardPosition newPosition = possiblePositions.get((int) (Math.random() * possiblePositions.size()));
+        getCell(obstacle.getPos()).release();
+        obstacle.setPos(newPosition);
+        getCell(newPosition).setGameElement(obstacle);
+        setChanged();
 	}
 
 	
-	public void removeGoal() {
-		//TODO
-		
+	public void removeGoal() {//
+		getCell(goalPosition).removeGoal();
+		setGoalPosition(null);
+		setChanged();
+	//	goal = null;
 	}
 	public boolean isFinished() {
 		return isFinished;
@@ -132,7 +160,12 @@ public abstract class Board extends Observable {
 	public LinkedList<Obstacle> getObstacles() {
 		//TODO
 		// percorrer cells e acumular obstáculos numa lista
-		return null;
+	//	locksnakes.lock();
+		//try {
+			return obstacles;
+		//}finally { //pra garantir q dou unlock por um try smp no q ta a ser feito
+		//	locksnakes.unlock();
+		//}
 	}
 
 
@@ -140,6 +173,15 @@ public abstract class Board extends Observable {
 		snakes.add(snake);
 	}
 
+	//
+	public void gameOver() {
+		isFinished = true;
+		for (Snake snake : snakes) {
+			snake.killSnake();//interrompe as threads snakes todas
+			
+		}
+		setChanged();
+	}
 	
 	public abstract void init(); 
 

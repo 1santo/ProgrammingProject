@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 
 import game.GameElement;
 import game.Goal;
@@ -22,6 +23,8 @@ public class LocalBoard extends Board{
 	private static final int NUM_OBSTACLES = 3;
 	private static final int NUM_SIMULTANEOUS_MOVING_OBSTACLES = 1;
 
+	private int random = ThreadLocalRandom.current().nextInt(1, 10);//
+
 	public LocalBoard() {		//
 		for (int i = 0; i < NUM_SNAKES; i++) {
 			Snake snake = new AutomaticSnake(i, this);
@@ -34,9 +37,11 @@ public class LocalBoard extends Board{
 		}
 		
 		//criar goals
-		Goal goal = new Goal(this);
-        setGoalPosition(getRandomPosition());
-        addGameElement(goal);
+		Goal goal = new Goal(this,random);
+		BoardPosition goalPos = getRandomPosition();
+        setGoalPosition(goalPos);
+        addGameElement(goal); 
+        System.out.println("Goal of "+goal.getGoalValue()+"pos: "+goalPos);
         setChanged();
 	}
 
@@ -62,7 +67,6 @@ public class LocalBoard extends Board{
 		for (int i = 0; i < NUM_OBSTACLES; i++) {
 			for(Obstacle obs: obstacles) {
 				executor.submit(new ObstacleMover(obs,this));
-				
 			}
 		}
 		executor.shutdown();

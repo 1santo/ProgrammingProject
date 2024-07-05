@@ -6,13 +6,13 @@ import environment.Board;
 import environment.LocalBoard;
 
 public class Goal extends GameElement  {
-	private int value=1;
+	private int value;
 	private Board board;
 	public static final int MAX_VALUE=10;
 	private int random = ThreadLocalRandom.current().nextInt(1, 10);//
-	public Goal( Board board2) {
+	public Goal( Board board2, int value) {
 		this.board = board2;
-		this.value=random;//
+		this.value=9;//
 	}
 	public int getValue() {
 		return value;
@@ -20,7 +20,7 @@ public class Goal extends GameElement  {
 	
 	//se for maior que 10 nao incrementa ne
 	public void incrementValue() throws InterruptedException {
-		if(value<MAX_VALUE) {//
+		if(value<MAX_VALUE-1) {//
 			value++;
 		}//
 		else return;//

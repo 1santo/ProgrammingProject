@@ -25,8 +25,15 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 	}
 
 	
-	public void killSnake () { killed = true ; }
-	public boolean wasKilled () { return killed == true ;}
+	public void killSnake () { 
+		killed = true ; 
+		//vou interromper e parar a execucao aqui!!
+		interrupt();
+	}
+	
+	
+	public boolean wasKilled () {  
+		return killed; } //killed== true ; tirei isto
 	
 	public int getSize() {
 		return size;
@@ -46,6 +53,7 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 	
 	protected void move(Cell newCell) throws InterruptedException {//
 		newCell.request(this);
+		board.setChanged();
 	}
 	
 	
@@ -88,4 +96,9 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 
 		return coordinates;
 	}	
+	
+	//
+	private void stopRunning() {
+		board.gameOver();
+	}
 }

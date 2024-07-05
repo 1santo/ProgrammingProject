@@ -21,7 +21,10 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 	private GameElement gameElement=null;
 	
 	private Lock lockC = new ReentrantLock();//
-	private Condition cellOccupied = lockC.newCondition();//
+	private Condition cellOccupiedTemp= lockC.newCondition();//temporaria com cobra ou obs
+	private Condition cellDeoccupied = lockC.newCondition();//temporaria
+	private Condition cellOccupiedByGoal = lockC.newCondition();//vai notificar que o sitio do goal é outro
+	private Condition cellOccupiedByKiller = lockC.newCondition();//killer nao vai sair dali
 	
 		public Cell(BoardPosition position)  {
 		super();
@@ -49,7 +52,7 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 				ocuppyingSnake=snake;
 				//inicialmente adiciona a primeira cell
 				snake.getCells().addFirst(this);
-			
+				cellOccupiedTemp.signalAll();
 				//mas se ja for cobra com mais celulas>
 				//if(snakeTemp.getCells().size()>1) {
 				//Cell last = snakeTemp.getCells().getLast();
@@ -59,6 +62,10 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 				if(isOcupiedByGoal()) {
 					//se o premio for o valor maximo (9) termina o jogo
 					if(getGoal().getValue()==Goal.MAX_VALUE-1) {
+						getGoal().captureGoal();
+						//tem q dizer q agr o sitio do goal e outro
+						//cellOccupiedByGoal.signalAll();
+						snake.getBoard().gameOver(); //termina o jogo
 						
 					}
 					else {
@@ -68,13 +75,15 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 					}
 						
 				}
+
 			}
 			else if(isOccupiedByKiller()) {
 				snake.killSnake(); //mata cobra
-				cellOccupied.notifyAll();  //avisa quem estava a espera q n ta ocupada
+				cellDeoccupied.notifyAll();  //avisa quem estava a espera q n ta ocupada
 			}
-			else {
-				cellOccupied.await(); //espera q a cel fique desocupada
+			
+			else {//if ocupada por snake or obstacle
+				cellDeoccupied.await(); //espera q a cel fique desocupada
 			
 			}
 			
@@ -83,7 +92,7 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 		}
 	}
 
-	public void release() {//
+	public void release() throws InterruptedException {//
 		lockC.lock();
 		
 		try {
@@ -92,7 +101,7 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 					Snake snakeTemp = ocuppyingSnake;
 					ocuppyingSnake.getCells().removeLast();
 					ocuppyingSnake=null;
-					cellOccupied.signalAll();
+					cellDeoccupied.signalAll();
 				}
 
 			}
@@ -100,7 +109,7 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 				
 			}
 			else if (isOccupiedByKiller()){
-				
+				cellOccupiedTemp.await();//fica a espera ate q uma cobra venha
 			}
 			else if (isOcupiedByObstacle()){
 				
@@ -123,16 +132,23 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 	public void setGameElement(GameElement obstacle) throws InterruptedException {
 		lockC.lock();
 		try {
-			while(isOcupied() || isOcupiedByGoal()) cellOccupied.await();
+			while(isOcupied() || isOcupiedByGoal()) cellDeoccupied.await();
 				gameElement=obstacle;
+				//obstacle.
+				//cellOccupiedTemp.signalAll();
 		}finally {
 			lockC.unlock();
 		}
 
 	}
+	
+	public void removeObstacle() { //
+		gameElement = null;
+	}
 
-	public boolean isOcupied() { // fiz e n considerei goal ocupado
-		return isOcupiedBySnake() || isOccupiedByKiller() || isOcupiedByObstacle();
+
+	public boolean isOcupied() { // fiz e n considerei goal nem killer ocupado
+		return isOcupiedBySnake() || isOcupiedByObstacle();
 	}
 
 
@@ -142,11 +158,9 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 
 
 	public Goal removeGoal() { //
-		// TODO
-		return null;
-	}
-	public void removeObstacle() {
-		// TODO
+		Goal goal = (Goal) gameElement;
+		gameElement = null;
+		return goal;
 	}
 
 

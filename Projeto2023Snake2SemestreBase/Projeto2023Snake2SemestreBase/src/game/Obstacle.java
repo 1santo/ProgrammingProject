@@ -2,15 +2,18 @@ package game;
 
 import environment.Board;
 import environment.BoardPosition;
+import environment.Cell;
 import environment.LocalBoard;
 
 public class Obstacle extends GameElement {
 	
 	
-	private static final int NUM_MOVES=3;
+	public static final int NUM_MOVES=3;
 	static final int OBSTACLE_MOVE_INTERVAL = 400;
 	private int remainingMoves=NUM_MOVES;
 	private Board board;
+	private BoardPosition pos;//
+	
 	public Obstacle(Board board2) {
 		super();
 		this.board = board2;
@@ -30,7 +33,8 @@ public class Obstacle extends GameElement {
 	//
 public void doInitialPositioning() {
 		
-		BoardPosition pos=board.getRandomPosition();
+		pos=board.getRandomPosition();
+		System.out.println(this+" is obstacle em: "+ pos);
 		try {
 			board.getCell(pos).setGameElement(this);
 		} catch (InterruptedException e) {
@@ -39,12 +43,22 @@ public void doInitialPositioning() {
 		}
 		
 		//this.setCell(board.getCell(pos));
-		//board.getObstacles().add(this);
-		System.out.println("obst: "+this);	
+		//board.getObstacles().add(this);	
 		board.addObstacles(this);
 		board.setChanged();	
 
 	}
-	
+
+
+
+
+//
+public BoardPosition getPos() {
+	return pos;
+}
+
+public void setPos(BoardPosition newPos) {
+	pos=newPos;
+}
 
 }

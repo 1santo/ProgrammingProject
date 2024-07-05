@@ -23,7 +23,7 @@ public class AutomaticSnake extends Snake {
 		
 		doInitialPositioning();
 		System.out.println(getBoardPosition());
-		System.err.println(this.getIdentification()+" initial size:"+snakecells.size());
+		System.out.println(this.getIdentification()+" initial size:"+snakecells.size());
 	
 	try {
 		Thread.sleep(1000); //10000
@@ -55,7 +55,7 @@ public class AutomaticSnake extends Snake {
 			e.printStackTrace();
 		}
 	}
-
+		if(wasKilled()) this.interrupt();//
 	
 	}
 
@@ -116,11 +116,12 @@ public class AutomaticSnake extends Snake {
 			biggest.getLock().lock();
 				try {
 					
-					//if(snakecells.size()>6) {
-					if(!snakecells.isEmpty()) {
-						Cell last = snakecells.getLast();
-						last.release();				
-							
+					if(snakecells.size()>=getSize()) { //verifica tam da cobra so tira se for maior
+						if(!snakecells.isEmpty()) {
+							Cell last = snakecells.getLast();
+							last.release();				
+								
+						}
 					}
 					
 					//so pode mover-se se conseguir adquirir os dois cadeados

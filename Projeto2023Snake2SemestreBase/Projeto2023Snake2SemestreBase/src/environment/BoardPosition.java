@@ -42,6 +42,12 @@ public class BoardPosition implements Serializable, Comparable<BoardPosition>{//
 	public BoardPosition getCellRight() {
 		return new BoardPosition(x+1, y);
 	}
+	
+	public BoardPosition getCellPos() {
+		return new BoardPosition(x, y);
+	}
+	
+	
 //
 	@Override
 	public int compareTo(BoardPosition other) {

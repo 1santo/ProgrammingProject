@@ -23,6 +23,7 @@ public class BoardPosition implements Serializable{
 		return other.x==x && other.y == y;
 	}
 	
+	//calculo da posicao mais perto providenciado
 	public double distanceTo(BoardPosition other) {
 		double delta_x = y - other.y;
 		double delta_y = x - other.x;

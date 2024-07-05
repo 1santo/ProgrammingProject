@@ -21,6 +21,7 @@ public abstract class Board extends Observable {
 	public static final int WIDTH = 30;
 	public static final int HEIGHT = 30;
 	protected LinkedList<Snake> snakes = new LinkedList<Snake>();
+	protected LinkedList<Obstacle> obstacles= new LinkedList<Obstacle>(); //
 	protected boolean isFinished;
 
 	public Board() {
@@ -68,9 +69,24 @@ public abstract class Board extends Observable {
 
 	}
 
-	public BoardPosition selectPositionClosestToGoal(List<BoardPosition> possibleDestinations) {
-		//TODO
-		return null;
+	public BoardPosition selectPositionClosestToGoal(List<BoardPosition> possibleDestinations) { //
+		if (goalPosition == null) {
+			return null;
+		}
+		else {
+			BoardPosition closestPositionToGoal = null; //tenho q iniciar senao n retorna
+			double minDistance = Double.MAX_VALUE;
+	
+			for (BoardPosition pos : possibleDestinations) {
+			double distance = pos.distanceTo(goalPosition);
+				if (distance < minDistance) {
+					minDistance = distance;
+					closestPositionToGoal = pos;
+				}
+			}
+			
+			return closestPositionToGoal;
+			}
 	}
 
 	protected Goal addGoal() {

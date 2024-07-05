@@ -40,12 +40,18 @@ public class Cell{
 		try {
 			if(!isOcupied()) {
 				ocuppyingSnake=snake;
-				Cell last = snake.getCells().getLast();
-				snake.getCells().removeLast();
+				//inicialmente adiciona a primeira cell
 				snake.getCells().addFirst(this);
+				//mas se ja for cobra com mais celulas>
+				if(snake.getCells().size()>1) {
+				Cell last = snake.getCells().getLast();
+					snake.getCells().removeLast();
+				}
 				if(isOcupiedByGoal()) {
-					
-					
+					getGoal().captureGoal(); //se for goal incremnta premio
+					removeGoal(); //remove goal da celula
+					//falta meter goal noutro sitio
+						
 				}
 			}
 			
@@ -105,7 +111,7 @@ public class Cell{
 	}
 
 
-	public Goal removeGoal() {
+	public Goal removeGoal() { //
 		// TODO
 		return null;
 	}

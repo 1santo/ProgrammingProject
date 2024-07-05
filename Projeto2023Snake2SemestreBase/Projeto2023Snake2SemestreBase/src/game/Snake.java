@@ -60,7 +60,7 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				snakecells.add(board.getCell(init));
+				//snakecells.add(board.getCell(init));
 				System.err.println("Snake "+getIdentification()+" starting at:"+getCells().getLast().getPosition());	
 				//a ultima pos da lista vai ter a cabeca
 	}

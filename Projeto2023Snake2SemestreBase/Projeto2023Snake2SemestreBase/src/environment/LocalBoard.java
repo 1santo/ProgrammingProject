@@ -34,6 +34,8 @@ public class LocalBoard extends Board{
 		for (int i = 0; i < NUM_OBSTACLES; i++) {
 			Obstacle obs = new Obstacle(this);
 			obs.doInitialPositioning();
+		//	addObstacles(obs);
+			//addGameElement(obs);
 		}
 		
 		//criar goals

@@ -60,6 +60,7 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 				//}
 				
 				if(isOcupiedByGoal()) {
+					snake.killSnake();
 					//se o premio for o valor maximo (9) termina o jogo
 					if(getGoal().getValue()==Goal.MAX_VALUE-1) {
 						getGoal().captureGoal();

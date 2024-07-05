@@ -30,11 +30,13 @@ public class Obstacle extends GameElement {
 		}
 	}
 
+	
+	
 	//
 public void doInitialPositioning() {
 		
 		pos=board.getRandomPosition();
-		System.out.println(this+" is obstacle em: "+ pos);
+		System.out.println(this+" is obstacle em: "+ pos+" | classObstacle");
 		try {
 			board.getCell(pos).setGameElement(this);
 		} catch (InterruptedException e) {
@@ -44,8 +46,8 @@ public void doInitialPositioning() {
 		
 		//this.setCell(board.getCell(pos));
 		//board.getObstacles().add(this);	
-		board.addObstacles(this);
-		board.setChanged();	
+		//board.addObstacles(this);
+	//	board.setChanged();	
 
 	}
 

@@ -1,6 +1,8 @@
 package game;
 
 import environment.Board;
+import environment.BoardPosition;
+import environment.Cell;
 import environment.LocalBoard;
 
 public class ObstacleMover extends Thread {
@@ -16,11 +18,18 @@ public class ObstacleMover extends Thread {
 	
 	@Override
 	public void run() { //
-
+		
+		try {
+			Thread.sleep(obstacle.OBSTACLE_MOVE_INTERVAL);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		for(int i=0; i< obstacle.getRemainingMoves();i++) {
 			try {
-				move();
-				obstacle.decrementRemainingMoves();
+				BoardPosition pos=board.getRandomPosition();
+				move(pos);
+				//obstacle.decrementRemainingMoves();
 				board.setChanged();
 				System.out.println(obstacle.getRemainingMoves());
 			} catch (ArrayIndexOutOfBoundsException e) {
@@ -34,7 +43,9 @@ public class ObstacleMover extends Thread {
 	}
 	
 	//
-	protected void move() throws InterruptedException {
+	protected void move(BoardPosition newPos) throws InterruptedException {
+		
+		
 		
 		// clear obstacle list , necessary when resetting obstacles.
 		System.out.println("lista obst: "+board.getObstacles());		
@@ -48,8 +59,8 @@ public class ObstacleMover extends Thread {
 		
 		System.out.println("cleared, lista obst: "+board.getObstacles());		
 
-		Thread.sleep(obstacle.OBSTACLE_MOVE_INTERVAL);
-	    			this.obstacle.doInitialPositioning();
+		
+	    		//	this.obstacle.doInitialPositioning();
 	    			System.out.println("obst"+this.obstacle);
 	    			board.setChanged();
 		

@@ -28,8 +28,9 @@ public abstract class Board extends Observable {
 	protected LinkedList<Obstacle> obstacles= new LinkedList<Obstacle>(); //
 	protected boolean isFinished;
 
-	private int random = ThreadLocalRandom.current().nextInt(1, 10);//
+	private int random = ThreadLocalRandom.current().nextInt(1, 10);//ThreadLocalRandom efficient when working w multiple threads
 	private Lock locksnakes = new ReentrantLock();//teste
+	private Lock lockobs = new ReentrantLock();//teste
 	
 	public Board() {
 		cells = new Cell[WIDTH][HEIGHT];
@@ -160,12 +161,12 @@ public abstract class Board extends Observable {
 	public LinkedList<Obstacle> getObstacles() {
 		//TODO
 		// percorrer cells e acumular obstáculos numa lista
-	//	locksnakes.lock();
-		//try {
+		lockobs.lock();
+		try {
 			return obstacles;
-		//}finally { //pra garantir q dou unlock por um try smp no q ta a ser feito
-		//	locksnakes.unlock();
-		//}
+		}finally { //pra garantir q dou unlock por um try smp no q ta a ser feito
+			lockobs.unlock();
+		}
 	}
 
 

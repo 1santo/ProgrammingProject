@@ -28,7 +28,7 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 	public void killSnake () { 
 		killed = true ; 
 		//vou interromper e parar a execucao aqui!!
-		interrupt();
+		this.interrupt();
 	}
 	
 	

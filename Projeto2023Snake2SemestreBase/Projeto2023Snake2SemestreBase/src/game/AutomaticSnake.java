@@ -22,7 +22,6 @@ public class AutomaticSnake extends Snake {
 	public void run() {
 		
 		doInitialPositioning();
-		System.out.println(getBoardPosition());
 		System.out.println(this.getIdentification()+" initial size:"+snakecells.size());
 	
 	try {
@@ -33,10 +32,10 @@ public class AutomaticSnake extends Snake {
 	
 	while (!wasKilled()) {
 		try {
-			System.out.println("board pos: "+this+getBoardPosition());
+			System.out.println("Autosnake thread board pos: "+this.getIdentification()+getBoardPosition());
 			
 			while(notInMaxGoal) {
-				
+				System.out.println(this.getIdentification()+" mid size:"+snakecells.size());
 				try {
 					if(!getCells().isEmpty())//
 					move(nextCell());

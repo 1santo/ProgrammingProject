@@ -12,11 +12,12 @@ import environment.Cell;
 public abstract class Snake extends Thread {// em vez de extend meti implement
 
 	private boolean killed = false ;
-	protected LinkedList<Cell> cells = new LinkedList<Cell>();
+	protected LinkedList<Cell> snakecells = new LinkedList<Cell>();
 	protected int size = 5;
 	private int id;
 	private Board board;
-
+	private BoardPosition init;
+	
 	public Snake(int id,Board board) {
 		this.id = id;
 		this.board=board;
@@ -35,17 +36,33 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 	}
 
 	public int getCurrentLength() {
-		return cells.size();
+		return snakecells.size();
 	}
 	
 	public LinkedList<Cell> getCells() {
-		return cells;
+		return snakecells;
 	}
 	protected void move(Cell cell) throws InterruptedException {
 		//TODO
 	}
-	protected void doInitialPositioning() {
-		//TODO
+	
+	
+	protected void doInitialPositioning() { //
+		// Random position on the first column. 
+				// At startup, snake occupies a single cell
+				int posX = 0;
+				int posY = (int) (Math.random() * Board.HEIGHT);
+				init = new BoardPosition(posX, posY);
+				
+				try {
+					board.getCell(init).request(this);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				snakecells.add(board.getCell(init));
+				System.err.println("Snake "+getIdentification()+" starting at:"+getCells().getLast().getPosition());	
+				//a ultima pos da lista vai ter a cabeca
 	}
 	
 	public Board getBoard() {
@@ -56,7 +73,7 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 	// Used in GUI. Do not alter
 	public synchronized LinkedList<BoardPosition> getPath() {
 		LinkedList<BoardPosition> coordinates = new LinkedList<BoardPosition>();
-		for (Cell cell : cells) {
+		for (Cell cell : snakecells) {
 			coordinates.add(cell.getPosition());
 		}
 

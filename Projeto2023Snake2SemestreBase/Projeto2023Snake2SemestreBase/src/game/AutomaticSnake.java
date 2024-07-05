@@ -19,7 +19,9 @@ public class AutomaticSnake extends Snake {
 
 	@Override
 	public void run() {
-		//TODO
+		
+		doInitialPositioning();
+		
 	}
 	
 

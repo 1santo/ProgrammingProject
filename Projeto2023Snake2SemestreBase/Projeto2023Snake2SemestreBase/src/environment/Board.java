@@ -38,7 +38,8 @@ public abstract class Board extends Observable {
 		return cells[cellCoord.x][cellCoord.y];
 	}
 
-	protected BoardPosition getRandomPosition() {
+	//changed to pub
+	public BoardPosition getRandomPosition() {
 		return new BoardPosition((int) (Math.random() *HEIGHT),(int) (Math.random() * HEIGHT));
 	}
 

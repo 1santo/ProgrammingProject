@@ -38,9 +38,9 @@ public class LocalBoard extends Board{
 	
 	public void init() { //
 		for(Snake s:snakes) {
-			Thread snakey = new Thread(new AutomaticSnake(s.getIdentification(), this));
+			Thread snakey = new AutomaticSnake(s.getIdentification(), this);
 			snakey.start();
-			System.out.print("Snake created: "+s+"at pos: ");
+			System.out.print("Snake created: "+s+"at pos: "+"\n");
 			
 		}
 		

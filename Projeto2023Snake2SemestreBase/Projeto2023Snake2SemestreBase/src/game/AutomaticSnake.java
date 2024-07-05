@@ -38,7 +38,8 @@ public class AutomaticSnake extends Snake {
 			while(notInMaxGoal) {
 				
 				try {
-				move(nextCell());
+					if(!getCells().isEmpty())//
+					move(nextCell());
 	        	getBoard().setChanged();
 				} catch (ArrayIndexOutOfBoundsException e) {
 					System.out.println("out of board");
@@ -60,6 +61,13 @@ public class AutomaticSnake extends Snake {
 
 	//
 	private Cell nextCell() {
+		/*
+		if (getCells().isEmpty()) {
+			System.err.println("Snake has no cells.");
+			killSnake();
+			return null;
+        }*/
+		
 		Cell head = getCells().getFirst();
 		List<BoardPosition> possiblePositions = getBoard().getNeighboringPositions(head);
 		
@@ -71,6 +79,24 @@ public class AutomaticSnake extends Snake {
 		
 		if (newPosition != null) {
 			return getBoard().getCell(newPosition);
+			
+			
+			/*
+			 		if (newPosition != null) {
+			Cell newCell = getBoard().getCell(newPosition);
+			 if (!newCell.isOcupied()) {
+				 return newCell;
+			 } else {
+				 System.out.println("Cell ocupada.");
+				 return null;
+	            }
+		} else {
+			killSnake();
+			return null;
+		} 
+			 
+			 */
+			
 		} else {
 			killSnake();
 			return null;
@@ -80,6 +106,8 @@ public class AutomaticSnake extends Snake {
 	
 	@Override
 	protected void move(Cell newCell) throws InterruptedException {//
+		
+		
 		Cell cellWithHead= getCells().getFirst();
 		Cell smallest = cellWithHead.compareTo(newCell)<0 ? cellWithHead : newCell; //condition ? value_if_true : value_if_false;
 		Cell biggest = cellWithHead.compareTo(newCell)<0 ? newCell : cellWithHead;
@@ -87,7 +115,19 @@ public class AutomaticSnake extends Snake {
 		try {
 			biggest.getLock().lock();
 				try {
-					newCell.request(this);
+					
+					//if(snakecells.size()>6) {
+					if(!snakecells.isEmpty()) {
+						Cell last = snakecells.getLast();
+						last.release();				
+							
+					}
+					
+					//so pode mover-se se conseguir adquirir os dois cadeados
+					//pq imaginemos q a cobra ainda ficou la presa atras...
+					newCell.request(this); //q remove a cauda e interage com elementos
+					
+					
 				}finally {
 					biggest.getLock().unlock();
 				}

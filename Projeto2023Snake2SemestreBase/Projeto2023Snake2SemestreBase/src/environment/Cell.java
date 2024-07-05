@@ -49,11 +49,13 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 				ocuppyingSnake=snake;
 				//inicialmente adiciona a primeira cell
 				snake.getCells().addFirst(this);
+			
 				//mas se ja for cobra com mais celulas>
-				if(snake.getCells().size()>1) {
-				Cell last = snake.getCells().getLast();
-					snake.getCells().removeLast();
-				}
+				//if(snakeTemp.getCells().size()>1) {
+				//Cell last = snakeTemp.getCells().getLast();
+			//	ocuppyingSnake.getCells().removeLast();
+				//}
+				
 				if(isOcupiedByGoal()) {
 					//se o premio for o valor maximo (9) termina o jogo
 					if(getGoal().getValue()==Goal.MAX_VALUE-1) {
@@ -71,9 +73,9 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 				snake.killSnake(); //mata cobra
 				cellOccupied.notifyAll();  //avisa quem estava a espera q n ta ocupada
 			}
-			
 			else {
 				cellOccupied.await(); //espera q a cel fique desocupada
+			
 			}
 			
 		}finally {
@@ -83,11 +85,16 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 
 	public void release() {//
 		lockC.lock();
+		
 		try {
 			if(isOcupiedBySnake()) {
-				Snake snakeTemp = ocuppyingSnake;
-				ocuppyingSnake=null;
-				cellOccupied.notifyAll();
+				if (!ocuppyingSnake.getCells().isEmpty()) {
+					Snake snakeTemp = ocuppyingSnake;
+					ocuppyingSnake.getCells().removeLast();
+					ocuppyingSnake=null;
+					cellOccupied.signalAll();
+				}
+
 			}
 			else if (isOcupiedByGoal()){
 				

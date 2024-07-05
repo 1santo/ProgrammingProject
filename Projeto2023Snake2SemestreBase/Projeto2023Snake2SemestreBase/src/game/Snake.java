@@ -57,7 +57,9 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 				init = new BoardPosition(posX, posY);
 				
 				try {
-					board.getCell(init).request(this);
+					Cell initialCell = board.getCell(init);
+					initialCell.request(this);
+					//snakecells.add(initialCell);
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

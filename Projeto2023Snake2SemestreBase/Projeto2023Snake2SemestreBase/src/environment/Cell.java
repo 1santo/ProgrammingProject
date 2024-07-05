@@ -50,13 +50,17 @@ public class Cell{
 				if(isOcupiedByGoal()) {
 					getGoal().captureGoal(); //se for goal incremnta premio
 					removeGoal(); //remove goal da celula
-					//falta meter goal noutro sitio
+					//falta meter objeto goal noutro sitio
 						
 				}
 			}
+			else if(isOccupiedByKiller()) {
+				snake.killSnake(); //mata cobra
+				cellOccupied.notifyAll();  //avisa quem estava a espera q n ta ocupada
+			}
 			
 			else {
-				cellOccupied.await();
+				cellOccupied.await(); //espera q a cel fique desocupada
 			}
 			
 		}finally {

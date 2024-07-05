@@ -16,7 +16,7 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 	protected int size = 5;
 	private int id;
 	private Board board;
-	private BoardPosition init;
+	private BoardPosition init; //
 	
 	public Snake(int id,Board board) {
 		this.id = id;
@@ -62,7 +62,16 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 				}
 				//snakecells.add(board.getCell(init));
 				System.err.println("Snake "+getIdentification()+" starting at:"+getCells().getLast().getPosition());	
-				//a ultima pos da lista vai ter a cabeca
+				//a ultima pos da lista vai ter a cauda^
+				
+				while (!wasKilled()) {
+					//move
+					try {
+						Thread.sleep(board.PLAYER_PLAY_INTERVAL); // tempo entre moves
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 	}
 	
 	public Board getBoard() {

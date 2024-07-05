@@ -40,7 +40,15 @@ public class LocalBoard extends Board{
 		for(Snake s:snakes) {
 			Thread snakey = new AutomaticSnake(s.getIdentification(), this);
 			snakey.start();
-			System.out.print("Snake created: "+s+"at pos: "+"\n");
+			
+			//tempo pra esperar pra que faca o run da thread pra ver onde ficou
+			/*
+			try {
+				Thread.sleep(1500); //10000
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}*/
+			System.out.print("Snake created: "+s.getIdentification()+"\n");
 			
 		}
 		

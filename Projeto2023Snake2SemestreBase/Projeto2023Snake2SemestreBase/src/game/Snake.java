@@ -69,6 +69,10 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 		return board;
 	}
 	
+	public BoardPosition getBoardPosition() {
+		return init;
+	}
+	
 	// Utility method to return cells occupied by snake as a list of BoardPosition
 	// Used in GUI. Do not alter
 	public synchronized LinkedList<BoardPosition> getPath() {

@@ -21,9 +21,15 @@ public class AutomaticSnake extends Snake {
 	public void run() {
 		
 		doInitialPositioning();
-		
-	}
+		System.out.println(getBoardPosition());
+		System.err.println("initial size:"+snakecells.size());
 	
+	try {
+		Thread.sleep(1000); //10000
+	} catch (InterruptedException e1) {
+		e1.printStackTrace();
+	}
 
 	
+}
 }

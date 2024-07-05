@@ -20,14 +20,19 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 	private Snake ocuppyingSnake = null;
 	private GameElement gameElement=null;
 	
-	private Lock lockC = new ReentrantLock();
-	private Condition cellOccupied = lockC.newCondition();
+	private Lock lockC = new ReentrantLock();//
+	private Condition cellOccupied = lockC.newCondition();//
 	
 		public Cell(BoardPosition position)  {
 		super();
 		this.position = position;
 	}
 
+	//
+	public Lock getLock() {
+		return lockC;
+	}
+		
 	public GameElement getGameElement() {
 		return gameElement;
 	}

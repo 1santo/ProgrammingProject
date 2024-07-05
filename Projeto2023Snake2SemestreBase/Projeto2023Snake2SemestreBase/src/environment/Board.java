@@ -72,7 +72,9 @@ public abstract class Board extends Observable {
 
 	public BoardPosition selectPositionClosestToGoal(List<BoardPosition> possibleDestinations) { //
 		if (goalPosition == null) {
+			System.out.println("O goal nao foi colocado no board.");
 			return null;
+			
 		}
 		else {
 			BoardPosition closestPositionToGoal = null; //tenho q iniciar senao n retorna

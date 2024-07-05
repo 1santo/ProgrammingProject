@@ -13,7 +13,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import game.AutomaticSnake;
 
-public class Cell{
+public class Cell implements Comparable<Cell>{//meti implements comaprable
+	//pra qnd formos mover no jogador, saber qual o lock da cell
+//que adquirimos primeiro
 	private BoardPosition position;
 	private Snake ocuppyingSnake = null;
 	private GameElement gameElement=null;
@@ -21,7 +23,7 @@ public class Cell{
 	private Lock lockC = new ReentrantLock();
 	private Condition cellOccupied = lockC.newCondition();
 	
-		public Cell(BoardPosition position) {
+		public Cell(BoardPosition position)  {
 		super();
 		this.position = position;
 	}
@@ -48,9 +50,15 @@ public class Cell{
 					snake.getCells().removeLast();
 				}
 				if(isOcupiedByGoal()) {
-					getGoal().captureGoal(); //se for goal incremnta premio
-					removeGoal(); //remove goal da celula
-					//falta meter objeto goal noutro sitio
+					//se o premio for o valor maximo (9) termina o jogo
+					if(getGoal().getValue()==Goal.MAX_VALUE-1) {
+						
+					}
+					else {
+						getGoal().captureGoal(); //se for goal incremnta premio
+						removeGoal(); //remove goal da celula
+						//falta meter objeto goal noutro sitio
+					}
 						
 				}
 			}
@@ -150,6 +158,14 @@ public class Cell{
 
 	public void requestInitialPositioning() {
 		
+	}
+
+	//
+	@Override
+	public int compareTo(Cell other) {
+	//	return this.position - other.position; //n pode pois n sao ints
+//ent vou implementar comparable no boardposition
+		return this.position.compareTo(other.position);
 	}
 
 }

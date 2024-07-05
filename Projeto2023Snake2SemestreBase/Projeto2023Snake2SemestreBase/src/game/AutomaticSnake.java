@@ -29,7 +29,58 @@ public class AutomaticSnake extends Snake {
 	} catch (InterruptedException e1) {
 		e1.printStackTrace();
 	}
+	
+	while (!wasKilled()) {
+		try {
+			System.out.println("board pos: "+this+getBoardPosition());
+			moveTowardsGoal();
+            getBoard().setChanged();
+			
+			while(notInMaxGoal) {
+					//&&(getBoardPosition().x!=getBoard().WIDTH)&&(getBoardPosition().y!=getBoard().HEIGHT)) {
+				//System.out.println("MOVED TO: " + nextCell().getPosition());
+				
+				try {
+				//	move(nextCell); //move to top or bottom etc cell
+
+					getBoard().setChanged();
+				} catch (ArrayIndexOutOfBoundsException e) {
+					System.out.println("out of board");
+					return;
+				}
+				Thread.sleep(Board.PLAYER_PLAY_INTERVAL); //apos mover dorme
+			}
+			
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
 	
-}
+	}
+	
+	//
+	private void moveTowardsGoal() { 
+		Cell head = getCells().getFirst();
+        List<BoardPosition> possiblePositions = getBoard().getNeighboringPositions(head);
+        BoardPosition newPosition = getBoard().selectPositionClosestToGoal(possiblePositions);
+
+        if (newPosition != null) {
+            Cell newCell = getBoard().getCell(newPosition);
+            try {
+                move(newCell);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            killSnake();
+        }
+		
+	}
+
+	@Override
+	protected void move(Cell newCell) throws InterruptedException {//
+		newCell.request(this);
+	}
+	
 }

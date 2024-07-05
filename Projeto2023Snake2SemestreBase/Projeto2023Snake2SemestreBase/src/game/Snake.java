@@ -17,6 +17,7 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 	private int id;
 	private Board board;
 	private BoardPosition init; //
+	protected boolean notInMaxGoal = true; //
 	
 	public Snake(int id,Board board) {
 		this.id = id;
@@ -42,8 +43,9 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 	public LinkedList<Cell> getCells() {
 		return snakecells;
 	}
-	protected void move(Cell cell) throws InterruptedException {
-		//TODO
+	
+	protected void move(Cell newCell) throws InterruptedException {//
+		newCell.request(this);
 	}
 	
 	
@@ -64,14 +66,6 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 				System.err.println("Snake "+getIdentification()+" starting at:"+getCells().getLast().getPosition());	
 				//a ultima pos da lista vai ter a cauda^
 				
-				while (!wasKilled()) {
-					//move
-					try {
-						Thread.sleep(board.PLAYER_PLAY_INTERVAL); // tempo entre moves
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
 	}
 	
 	public Board getBoard() {

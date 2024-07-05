@@ -2,7 +2,7 @@ package environment;
 
 import java.io.Serializable;
 
-public class BoardPosition implements Serializable{
+public class BoardPosition implements Serializable, Comparable<BoardPosition>{//
 	public final int x;
 	public final int y;
 
@@ -42,4 +42,14 @@ public class BoardPosition implements Serializable{
 	public BoardPosition getCellRight() {
 		return new BoardPosition(x+1, y);
 	}
+//
+	@Override
+	public int compareTo(BoardPosition other) {
+		 if (this.x == other.x) { // vejo por x primeiro e dps o y e' que interessa
+	            return Integer.compare(this.y, other.y);
+	        }
+	        return Integer.compare(this.x, other.x);
+	}
+	
+	
 }

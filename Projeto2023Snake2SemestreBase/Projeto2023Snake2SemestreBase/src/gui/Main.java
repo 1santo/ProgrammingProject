@@ -16,7 +16,7 @@ public class Main {
 		// Launch server
 		// TODO
 		Server server = new Server(board);
-		
+		System.out.println("______________THIS IS THE START OF THE SERVER____________"+server);
 		
 	}
 }

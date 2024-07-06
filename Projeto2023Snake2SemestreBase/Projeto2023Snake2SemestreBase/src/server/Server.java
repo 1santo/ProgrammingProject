@@ -1,20 +1,27 @@
 package server;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
 import environment.Board;
+import environment.BoardPosition;
+import environment.Cell;
 import environment.LocalBoard;
+import remote.ActionResult;
 
 public class Server {
 	public static final int SERVER_PORT =8080;
+	public static final int NUM_CONNECTS=30;
 	
 	private LocalBoard board;//
 	private ServerSocket server;//
 	private boolean gameOverTemp;
+	private ActionResult action;
 	
 	// TODO
 	public Server(Board board) {
@@ -25,8 +32,8 @@ public class Server {
 	
 	private void runServer() {
 		//1. create serversocket
-		try {//50 nr de conexoes
-			server= new ServerSocket(SERVER_PORT,50); //port need to be grater than 1024
+		try {
+			server= new ServerSocket(SERVER_PORT,NUM_CONNECTS); //port need to be grater than 1024
 		while(true) {
 			//2. waiting for connections
 				waitForConnections();
@@ -51,8 +58,10 @@ public class Server {
 
 	private class ConnectionHandler extends Thread{
 		private Socket connection;
-		LocalBoard boardLimpo;
-		LocalBoard boardSujo=board;
+		LocalBoard boardLimpo1;
+		LocalBoard boardSujo1=board;
+		ObjectInputStream boardSujo;
+		ObjectOutputStream boardLimpo;
 		
 		public ConnectionHandler(Socket connection) {
 			this.connection=connection;
@@ -60,12 +69,31 @@ public class Server {
 		
 		
 		//para ir buscar o board
-		private void processConnection(){
+		private void processConnection() throws IOException{ //pode n ter nd pra ler/mandar
+
 			do {
 				//leitura do board sujo com obstaculos cobras mortas etc
-				//aqui se o cliente entretanto mover //Espera!! posso criar uma thread dedicada pra fzr esta espera
-				System.out.println("TESTE do board que cliente mandou ");
-
+				BoardPosition position;
+				try {
+					position = (BoardPosition)boardSujo.readObject(); //readObject lanca excecao
+					
+					//aqui se o cliente entretanto mover //Espera!! posso criar uma thread dedicada pra fzr esta espera
+					action = handlePosition(position);
+					
+					boardLimpo.writeObject(action);
+					boardLimpo.flush(); //***
+					System.out.println("TESTE do board que cliente mandou ");
+					
+					
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+				
+				
 				
 				//aqui tem q fzr eco do board pros outros clientes
 				
@@ -74,19 +102,37 @@ public class Server {
 		
 		private void getBoardUpdates() throws IOException {
 			//Atualizacao/limpeza do board aqui
-			
-					//true-> autoflush= toda vez q escrever 1 msg n vou esperar o buffer ficar cheio pra enviar, mas eu envio sim automaticamente
-			
+			boardLimpo=new ObjectOutputStream(connection.getOutputStream());//aqui nao leva true
+				// no PrintWriter tinha true-> autoflush= toda vez q escrever 1 msg n vou esperar o buffer ficar cheio pra enviar, mas eu envio sim automaticamente
+				//neste preciso mesmo de indicar ***
+				
 			//Aqui leitura do board recebido
-			
+			boardSujo=new ObjectInputStream(connection.getInputStream());
 		}
+		
+	private ActionResult handlePosition(BoardPosition position) {
+		Cell cell=board.getCell(position);
+		boolean wasSuccessful=false;
+		
+			if (cell.isOcupiedByObstacle()) {
+			cell.removeObstacle();
+			wasSuccessful = true;
+			} else if (cell.isOcupiedBySnake() && cell.getOcuppyingSnake().wasKilled()) {
+			cell.removeSnake(cell.getOcuppyingSnake());
+			wasSuccessful = true;
+			}
+		
+		boolean gameEnded = board.isFinished();
+		
+		return new ActionResult(wasSuccessful, gameEnded);
+	}
 		
 		private void closeConnection() {
 			try {
 				if(boardSujo !=null)
 					//tenho que...
 				if(boardLimpo!=null)
-					//
+					//hmmm
 				if(connection !=null)
 					connection.close();
 			}catch (IOException e) {

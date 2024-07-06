@@ -125,10 +125,10 @@ public class Server {
 		
 		private void closeConnection() {
 			try {
-				if(boardSujo !=null)
-					//tenho que...
+				if(boardSujo !=null)//quando fecho o board?
+					boardSujo.close();
 				if(boardLimpo!=null)
-					//hmmm
+					boardLimpo.close();
 				if(connection !=null)
 					connection.close();
 			}catch (IOException e) {

@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Random;
 import environment.BoardPosition;
@@ -48,10 +49,10 @@ public class Client {
 		
 	private void closeConnection() {
 		try {
-			if(boardSujo !=null)
-				//
+			if(boardSujo !=null)//quando fecho o board?
+				boardSujo.close();
 			if(boardLimpo!=null)
-				//
+				boardLimpo.close();
 			if(connection !=null)
 				connection.close();
 		}catch (IOException e) {
@@ -62,15 +63,12 @@ public class Client {
 		
 		//para ir buscar os canais
 		private void processConnection(){
-			
+			try {
 			 Random random = new Random();
 
 			 while (true){
 				 BoardPosition randomPosition = new BoardPosition(random.nextInt(30), random.nextInt(30));
-				
-				 
-				 
-				 try {
+
 					boardLimpo.writeObject(randomPosition);
 					boardLimpo.flush();
 					ActionResult action =(ActionResult)boardSujo.readObject();
@@ -87,14 +85,15 @@ public class Client {
 					 }
 
 					 Thread.sleep(3000); //um tempinho pra visualizar
-				 
-				}catch (IOException | ClassNotFoundException | InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				 
+ 
 			 }
-				 
+			}catch(SocketException e ) {	 
+			 } catch (IOException | ClassNotFoundException | InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally {
+				closeConnection(); //ter a certeza q fecha
+			} 
 
 			
 			/*

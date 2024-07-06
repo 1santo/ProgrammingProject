@@ -8,4 +8,11 @@ public class ActionResult {
 		
 	}
 
+	boolean getGamedEnded(){
+		return gameEnded;
+	}
+	
+	void setGamedEnded(){
+		gameEnded=true;
+	}
 }

@@ -102,23 +102,23 @@ public abstract class Board extends Observable {
 			}
 	}
 
-	protected Goal addGoal() {
+/*	protected Goal addGoal() {
 		Goal goal = new Goal(this, random);
         addGameElement(goal);
         return goal;
-	}
+	}*/
 
 	public void addObstacles(Obstacle obs) {//mudei pra add Obstacle em vez de int numberObstacles
 		obstacles.add(obs); //pq senao como adicionava o obs a lista???
 															//pus public tbm
 	}
 	
-	protected void addObstacles(int numberObstacles) {
+/*	protected void addObstacles(int numberObstacles) {
 		for (int i = 0; i < numberObstacles; i++) {
 			Obstacle obstacle = new Obstacle(this);
 			addGameElement(obstacle);
 		}
-	}
+	}*/
 
 	public LinkedList<Snake> getSnakes() {
 		locksnakes.lock();
@@ -136,7 +136,7 @@ public abstract class Board extends Observable {
 		notifyObservers();
 	}
 
-	public void moveObstacle(Obstacle obstacle) throws InterruptedException { //
+/*	public void moveObstacle(Obstacle obstacle) throws InterruptedException { //
 		//TODO
 		List<BoardPosition> possiblePositions = getNeighboringPositions(getCell(obstacle.getPos()));
         BoardPosition newPosition = possiblePositions.get((int) (Math.random() * possiblePositions.size()));
@@ -144,7 +144,7 @@ public abstract class Board extends Observable {
         obstacle.setPos(newPosition);
         getCell(newPosition).setGameElement(obstacle);
         setChanged();
-	}
+	}*/
 
 	
 	public void removeGoal() {//

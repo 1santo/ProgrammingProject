@@ -28,23 +28,24 @@ public class LocalBoard extends Board{
 	public LocalBoard() {		//
 		for (int i = 0; i < NUM_SNAKES; i++) {
 			Snake snake = new AutomaticSnake(i, this);
-			addSnake(snake);	//n esquecer de adicionar a lista do board
+			addSnake(snake);	//isto e' n esquecer de adicionar a lista do board
 		}
 		
 		for (int i = 0; i < NUM_OBSTACLES; i++) {
 			Obstacle obs = new Obstacle(this);
-			obs.doInitialPositioning();
 		//	addObstacles(obs);
 			//addGameElement(obs);
 		}
 		
+		//for number of times goals got captured until they reach 9
+		
 		//criar goals
 		Goal goal = new Goal(this,random);
-		BoardPosition goalPos = getRandomPosition();
-        setGoalPosition(goalPos);
-        addGameElement(goal); 
-        System.out.println("Goal of "+goal.getGoalValue()+"pos: "+goalPos);
-        setChanged();
+	//	BoardPosition goalPos = getRandomPosition();
+        setGoalPosition(goal.pos);
+      //  addGameElement(goal); 
+      //  System.out.println("Goal of "+goal.getGoalValue()+"pos: "+goalPos);
+      //  setChanged();
 	}
 
 	// synchronization in cell

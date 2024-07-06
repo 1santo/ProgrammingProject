@@ -25,15 +25,17 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 	}
 
 	
-	public void killSnake () { 
-		killed = true ; 
+	public synchronized void killSnake () { 
+		killed=true;
 		//vou interromper e parar a execucao aqui!!
-		this.interrupt();
+		interrupt();
+		board.setChanged();
+		System.out.println("MAX GOAL CAPTURED!!!!!!!!!!!!");
 	}
 	
 	
-	public boolean wasKilled () {  
-		return killed; } //killed== true ; tirei isto
+	public synchronized boolean wasKilled () {  
+		return killed==true; } 
 	
 	public int getSize() {
 		return size;

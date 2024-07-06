@@ -60,13 +60,7 @@ public class AutomaticSnake extends Snake {
 
 	//
 	private Cell nextCell() {
-		/*
-		if (getCells().isEmpty()) {
-			System.err.println("Snake has no cells.");
-			killSnake();
-			return null;
-        }*/
-		
+		if(!getCells().isEmpty()){
 		Cell head = getCells().getFirst();
 		List<BoardPosition> possiblePositions = getBoard().getNeighboringPositions(head);
 		
@@ -76,28 +70,16 @@ public class AutomaticSnake extends Snake {
 
 		//System.out.println("Posicao escolhida: " + newPosition);
 		
-		if (newPosition != null) {
-			return getBoard().getCell(newPosition);
-			
-			
-			/*
-			 		if (newPosition != null) {
-			Cell newCell = getBoard().getCell(newPosition);
-			 if (!newCell.isOcupied()) {
-				 return newCell;
-			 } else {
-				 System.out.println("Cell ocupada.");
-				 return null;
-	            }
-		} else {
-			killSnake();
-			return null;
-		} 
-			 
-			 */
-			
-		} else {
-			killSnake();
+			if (newPosition != null) {
+				return getBoard().getCell(newPosition);
+			} 
+	
+			else {
+				killSnake();
+				return null;
+		}
+		}else {
+			System.out.println("Snake has no cells.");
 			return null;
 		}
 	}
@@ -117,7 +99,12 @@ public class AutomaticSnake extends Snake {
 				biggest.getLock().lock();
 					try {
 						
-						if(snakecells.size()>=getSize()) { //verifica tam da cobra so tira se for maior
+						//so pode mover-se se conseguir adquirir os dois cadeados
+						//pq imaginemos q a cobra ainda ficou la presa atras...
+						newCell.request(this); //q remove a cauda e interage com elementos
+						
+						
+						if(snakecells.size()>getSize()) { //verifica tamanho da cobra so tira se for maior, mas se cobra ta num obstaculo o tamanho continua o msm pq?
 							if(!snakecells.isEmpty()) {
 								Cell last = snakecells.getLast();
 								last.release();				
@@ -125,9 +112,7 @@ public class AutomaticSnake extends Snake {
 							}
 						}
 						
-						//so pode mover-se se conseguir adquirir os dois cadeados
-						//pq imaginemos q a cobra ainda ficou la presa atras...
-						newCell.request(this); //q remove a cauda e interage com elementos
+						
 						
 						
 					}finally {
@@ -138,7 +123,7 @@ public class AutomaticSnake extends Snake {
 				smallest.getLock().unlock();
 			}
 		
-			}catch (Exception e) {
+			}catch (NullPointerException e) {
 		System.out.println("wait till snake has head?");
 		
 		}

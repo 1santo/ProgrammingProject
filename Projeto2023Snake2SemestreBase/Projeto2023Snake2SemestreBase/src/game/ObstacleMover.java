@@ -29,10 +29,10 @@ public class ObstacleMover extends Thread {
 			try {
 				BoardPosition pos=board.getRandomPosition();
 				move(board.getCell(pos));
-				
-				//obstacle.decrementRemainingMoves();
+				obstacle.decrementRemainingMoves();
 				board.setChanged();
-				System.out.println(obstacle.getRemainingMoves());
+				
+				System.out.println(obstacle+" moves: "+obstacle.getRemainingMoves());
 			} catch (ArrayIndexOutOfBoundsException e) {
 				System.out.println("out of board");
 				return;
@@ -63,28 +63,15 @@ public class ObstacleMover extends Thread {
 						//	addObstacles(obs);
 							//addGameElement(obs);
 						//}
-						
-						
+
 						// clear obstacle list , necessary when resetting obstacles.
 						System.out.println("2.Obstacle na pos: "+obstacle.getCells());
-						board.getObstacles().clear();
 						
-						
-						//board.getObstacles().clear();
 					//	board.removeGameElement(this.obstacle);
-				
-						
-						board.setChanged();
-				
-						
+						//System.out.println("lista antes, lista obst: "+board.getObstacles());
+						//board.getObstacles().clear();
 						System.out.println("cleared, lista obst: "+board.getObstacles());		
-				
-						
-					    		//	this.obstacle.doInitialPositioning();
-					    			System.out.println("obst"+this.obstacle);
-					    			board.setChanged();
-		
-	    			
+
 	    			
 					}finally {
 						biggest.getLock().unlock();

@@ -1,6 +1,8 @@
 package game;
 
 import java.util.LinkedList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import environment.Board;
 import environment.BoardPosition;
@@ -13,6 +15,7 @@ public class Obstacle extends GameElement {
 	public static final int NUM_MOVES=3;
 	static final int OBSTACLE_MOVE_INTERVAL = 400;
 	private int remainingMoves=NUM_MOVES;
+	private Lock lock=new ReentrantLock();
 	
 	public Obstacle(Board board2) {
 		super(board2);
@@ -20,18 +23,23 @@ public class Obstacle extends GameElement {
 	}
 	
 	public int getRemainingMoves() {
-		synchronized (this) {//
+		lock.lock();//
+		try {
 			return remainingMoves;
-		}
+		} finally {
+			lock.unlock();
+		}	
 	}
+	
 	public void decrementRemainingMoves() {
-		synchronized (this) {//
+		lock.lock();//
+		try {
 			remainingMoves--;
-		}
+		} finally {
+			lock.unlock();
+		}	
 	}
 
-	
-	
 	//
 	@Override
 	public void doInitialPositioning() {
@@ -51,17 +59,4 @@ public class Obstacle extends GameElement {
 	//	board.setChanged();	
 
 	}
-
-
-
-
-//
-	public BoardPosition getPos() {
-		return pos;
-	}
-	
-	public void setPos(BoardPosition newPos) {
-		pos=newPos;
-	}
-
 }

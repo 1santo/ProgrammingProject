@@ -33,8 +33,10 @@ public class LocalBoard extends Board{
 		
 		for (int i = 0; i < NUM_OBSTACLES; i++) {
 			Obstacle obs = new Obstacle(this);
+			addGameElement(obs);
+			System.out.println("ULTIMO OBSTACULO"+obstacles.getLast());
 		//	addObstacles(obs);
-			//addGameElement(obs);
+		
 		}
 		
 		//for number of times goals got captured until they reach 9
@@ -79,6 +81,10 @@ public class LocalBoard extends Board{
 //		TODO
 	}
 
+	
+	public int getNUM_OBSTACLES() {
+		return NUM_OBSTACLES;
+	}
 
 
 	// Ignore these methods: only for remote players, which are not present in this project

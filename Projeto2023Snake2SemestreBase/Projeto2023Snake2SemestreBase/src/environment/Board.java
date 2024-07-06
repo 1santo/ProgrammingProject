@@ -26,6 +26,7 @@ public abstract class Board extends Observable {
 	public static final int HEIGHT = 30;
 	protected LinkedList<Snake> snakes = new LinkedList<Snake>();
 	protected LinkedList<Obstacle> obstacles= new LinkedList<Obstacle>(); //
+	protected LinkedList<GameElement> gameElements= new LinkedList<GameElement>(); //
 	protected boolean isFinished;
 
 	private int random = ThreadLocalRandom.current().nextInt(1, 10);//ThreadLocalRandom efficient when working w multiple threads

@@ -187,6 +187,7 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 	}
 	
 	public void removeObstacle() { //
+		((Obstacle)gameElement).getCells().removeLast();
 		gameElement = null;
 		cellDeoccupied.signalAll();
 	}

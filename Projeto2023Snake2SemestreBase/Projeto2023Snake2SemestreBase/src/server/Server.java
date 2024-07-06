@@ -3,10 +3,8 @@ package server;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 
 import environment.Board;
 import environment.BoardPosition;
@@ -80,6 +78,7 @@ public class Server {
 					//aqui se o cliente entretanto mover //Espera!! posso criar uma thread dedicada pra fzr esta espera
 					action = handlePosition(position);
 					
+					//aqui tem q fzr eco do board pros outros clientes
 					boardLimpo.writeObject(action);
 					boardLimpo.flush(); //***
 					System.out.println("TESTE do board que cliente mandou ");
@@ -88,14 +87,11 @@ public class Server {
 				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				} 
 				
-				
-				
-				//aqui tem q fzr eco do board pros outros clientes
+				if (action.isGameEnded()) {
+					gameOverTemp=true;
+                  }
 				
 			} while(!gameOverTemp); //enquanto nao ha gameOver
 		}

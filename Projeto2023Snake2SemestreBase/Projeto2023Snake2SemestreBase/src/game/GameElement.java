@@ -15,7 +15,7 @@ public abstract class GameElement { //abstrata pros outros herdarem
 
 	protected void doInitialPositioning() {
 		pos=board.getRandomPosition();
-		System.out.println(this+" is "+this.getClass()+" em: "+ pos+" | classObstacle");
+		System.out.println(this+" is "+this.getClass()+" em: "+ pos+" | class"+this.getClass());
 		try {
 			board.getCell(pos).setGameElement(this);
 		} catch (InterruptedException e) {

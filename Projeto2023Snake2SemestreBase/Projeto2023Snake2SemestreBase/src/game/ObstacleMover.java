@@ -44,7 +44,7 @@ public class ObstacleMover extends Thread {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} //*
-				System.out.println(obstacle+" moves: "+obstacle.getRemainingMoves());
+				//System.out.println(obstacle+" moves: "+obstacle.getRemainingMoves());
 			} catch (ArrayIndexOutOfBoundsException e) {
 				System.out.println("out of board");
 				return;
@@ -75,7 +75,7 @@ public class ObstacleMover extends Thread {
 						System.out.println("1. "+obstacle+" na pos: "+obstacle.getCells());
 						Cell last =obstacle.getCells().getLast();
 						last.removeObstacle();
-						System.out.println("1234567890TESTINHO");
+						//System.out.println("1234567890TESTINHO");
 						toCell.setGameElement(obstacle);
 						//	addObstacles(obs);
 							//addGameElement(obs);

@@ -64,7 +64,7 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 				//}
 				
 				if(isOcupiedByGoal()) {
-					System.out.println("BIGGGGGGGGGG TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+					//System.out.println("BIGGGGGGGGGG TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
 					//snake.killSnake();
 					//se o premio for o valor maximo (9) termina o jogo
 					if(getGoal().getValue()==Goal.MAX_VALUE) {
@@ -104,7 +104,7 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 			}
 			
 			else if(isOccupiedByKiller()) {
-				System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+				//System.out.println("DIEEEEE");
 				snake.killSnake(); //mata cobra
 				cellDeoccupied.signalAll();  //avisa quem estava a espera q n ta ocupada
 			}
@@ -179,7 +179,7 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 				}
 				else if(element instanceof Killer) {
 					gameElement=element;
-					System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"+gameElement);
+					//System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"+gameElement);
 					Killer killer = (Killer) element;
 					killer.getCells().addFirst(this);
 				}

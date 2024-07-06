@@ -11,16 +11,26 @@ public class ActionResult implements Serializable{//pra guardar o estado de obje
 	private boolean wasSuccessful;
 	private boolean gameEnded;
 	
-	public ActionResult(boolean wasSuccessful, boolean gameEnded) {
+	public ActionResult(boolean wasSuccessful, boolean gameEnded){
 		this.wasSuccessful=wasSuccessful;
 		this.gameEnded=gameEnded;
 	}
 
-	boolean getGamedEnded(){
+	public boolean isGameEnded(){
 		return gameEnded;
 	}
 	
-	void setGamedEnded(){
-		gameEnded=true;
+	void setGameEnded(boolean gameEnded){
+		this.gameEnded = gameEnded; //mais safe se meter escificamente
+					//doq meter gameEnded=true acho eu
 	}
+	
+	public boolean wasSuccessful(){
+		return wasSuccessful;
+	}
+
+	public void setWasSuccessful(boolean wasSuccessful){
+		this.wasSuccessful = wasSuccessful;
+	}
+	
 }

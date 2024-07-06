@@ -52,7 +52,7 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 	public  void request(Snake snake) throws InterruptedException { //
 		lockC.lock();
 		try {
-			if(!isOcupied()) {
+			if(!isOcupied() && !isOccupiedByKiller()) {
 				ocuppyingSnake=snake;
 				//inicialmente adiciona a primeira cell
 				snake.getCells().addFirst(this);
@@ -102,9 +102,11 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 				}
 
 			}
+			
 			else if(isOccupiedByKiller()) {
+				System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 				snake.killSnake(); //mata cobra
-				cellDeoccupied.notifyAll();  //avisa quem estava a espera q n ta ocupada
+				cellDeoccupied.signalAll();  //avisa quem estava a espera q n ta ocupada
 			}
 			else {//if ocupada por snake
 				cellDeoccupied.await(); //espera q a cel fique desocupada
@@ -176,8 +178,10 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 				      //  setChanged();
 				}
 				else if(element instanceof Killer) {
-					gameElement=element; //celula passa a ter
-
+					gameElement=element;
+					System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"+gameElement);
+					Killer killer = (Killer) element;
+					killer.getCells().addFirst(this);
 				}
 				
 		}finally {

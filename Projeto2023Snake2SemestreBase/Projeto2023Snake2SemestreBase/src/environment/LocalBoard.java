@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
@@ -20,8 +21,8 @@ import game.AutomaticSnake;
 public class LocalBoard extends Board{
 	
 	private static final int NUM_SNAKES = 3;
-	private static final int NUM_OBSTACLES = 3;
-	private static final int NUM_SIMULTANEOUS_MOVING_OBSTACLES = 1;
+	private static final int NUM_OBSTACLES = 6;
+	private static final int NUM_SIMULTANEOUS_MOVING_OBSTACLES = 3;
 
 	private int random = ThreadLocalRandom.current().nextInt(1, 10);//
 
@@ -45,6 +46,7 @@ public class LocalBoard extends Board{
         Goal goal2 = new Goal(this,random);
         setGoalPosition(goal2,goal2.pos);
         }
+
 	}
 
 	// synchronization in cell
@@ -66,9 +68,13 @@ public class LocalBoard extends Board{
 		}
 		
 		ExecutorService executor = Executors.newFixedThreadPool(NUM_SIMULTANEOUS_MOVING_OBSTACLES);
+		//send the message to the 3 obstacle movers at once, at the same time
+		//to avoid one receiving one first
+		
+		CyclicBarrier barrier=new CyclicBarrier(NUM_SIMULTANEOUS_MOVING_OBSTACLES);
 		for (int i = 0; i < NUM_OBSTACLES; i++) {
 			for(Obstacle obs: obstacles) {
-				executor.submit(new ObstacleMover(obs,this));
+				executor.submit(new ObstacleMover(obs,this,barrier));
 			}
 		}
 		executor.shutdown();

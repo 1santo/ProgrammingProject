@@ -1,6 +1,11 @@
 package remote;
 
 public class ActionResult {
-//TODO
+	private boolean wasSuccessful;
+	private boolean gameEnded;
+	
+	public ActionResult() {
+		
+	}
 
 }

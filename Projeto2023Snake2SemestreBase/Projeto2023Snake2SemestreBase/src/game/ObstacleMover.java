@@ -1,5 +1,8 @@
 package game;
 
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+
 import environment.Board;
 import environment.BoardPosition;
 import environment.Cell;
@@ -8,9 +11,10 @@ import environment.LocalBoard;
 public class ObstacleMover extends Thread {
 	private Obstacle obstacle ;
 	private Board board ;
+	private CyclicBarrier barrier;
 	
 	//
-	public ObstacleMover(Obstacle obstacle, LocalBoard board) {
+	public ObstacleMover(Obstacle obstacle, LocalBoard board, CyclicBarrier barrier) {
 		super();
 		this.obstacle = obstacle;
 		this.board = board;
@@ -25,13 +29,21 @@ public class ObstacleMover extends Thread {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
 		for(int i=0; i< obstacle.getRemainingMoves();i++) {
 			try {
 				BoardPosition pos=board.getRandomPosition();
 				move(board.getCell(pos));
 				obstacle.decrementRemainingMoves();
 				board.setChanged();
-				
+				//numberWaiting diz qts threads estao em espera na barreira
+				//ate q todas acabem
+				try {
+					barrier.await();
+				} catch (BrokenBarrierException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} //*
 				System.out.println(obstacle+" moves: "+obstacle.getRemainingMoves());
 			} catch (ArrayIndexOutOfBoundsException e) {
 				System.out.println("out of board");
@@ -41,6 +53,11 @@ public class ObstacleMover extends Thread {
 				e.printStackTrace();
 			}
 		}
+		
+		//*acho q aqui e' q todas as threads acabaram
+		Killer killer =new Killer(board);
+		board.addGameElement(killer);
+		board.setChanged();
 	}
 	
 	//

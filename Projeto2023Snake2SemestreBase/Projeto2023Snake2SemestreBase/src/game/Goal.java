@@ -39,19 +39,5 @@ public class Goal extends GameElement  {
 		this.value=value;
 	}
 	
-	@Override
-	protected void doInitialPositioning() {
-		
-		pos=board.getRandomPosition();
-		System.out.println(this+" is Goal em: "+ pos+" | classGoal");
-		try {
-			board.getCell(pos).setGameElement(this);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-	}
 	
 }

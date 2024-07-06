@@ -13,7 +13,17 @@ public abstract class GameElement { //abstrata pros outros herdarem
 	protected BoardPosition init; //
 	public BoardPosition pos;//
 
-	protected abstract void doInitialPositioning(); //tds os elementos devem ter forma
+	protected void doInitialPositioning() {
+		pos=board.getRandomPosition();
+		System.out.println(this+" is "+this.getClass()+" em: "+ pos+" | classObstacle");
+		try {
+			board.getCell(pos).setGameElement(this);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}; //tds os elementos devem ter forma
 							//de iniciar a posicao dependendo doq sao
 	
 	public GameElement(Board board){

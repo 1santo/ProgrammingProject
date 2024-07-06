@@ -9,10 +9,5 @@ public class Killer extends GameElement {
 		doInitialPositioning();
 	}
 
-	@Override
-	protected void doInitialPositioning() {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

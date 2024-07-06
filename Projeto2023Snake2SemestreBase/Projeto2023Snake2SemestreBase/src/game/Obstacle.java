@@ -12,8 +12,8 @@ import environment.LocalBoard;
 public class Obstacle extends GameElement {
 	
 	
-	public static final int NUM_MOVES=3;
-	static final int OBSTACLE_MOVE_INTERVAL = 400;
+	public static final int NUM_MOVES=4;
+	static final int OBSTACLE_MOVE_INTERVAL = 300;
 	private int remainingMoves=NUM_MOVES;
 	private Lock lock=new ReentrantLock();
 	
@@ -40,23 +40,5 @@ public class Obstacle extends GameElement {
 		}	
 	}
 
-	//
-	@Override
-	public void doInitialPositioning() {
-		
-		pos=board.getRandomPosition();
-		System.out.println(this+" is obstacle em: "+ pos+" | classObstacle");
-		try {
-			board.getCell(pos).setGameElement(this);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		//this.setCell(board.getCell(pos));
-		//board.getObstacles().add(this);	
-		//board.addObstacles(this);
-	//	board.setChanged();	
 
-	}
 }

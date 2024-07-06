@@ -26,6 +26,7 @@ public abstract class Board extends Observable {
 	public static final int HEIGHT = 30;
 	protected LinkedList<Snake> snakes = new LinkedList<Snake>();
 	protected LinkedList<Obstacle> obstacles= new LinkedList<Obstacle>(); //
+	protected LinkedList<Killer> killers= new LinkedList<Killer>(); //
 	protected LinkedList<GameElement> gameElements= new LinkedList<GameElement>(); //
 	protected boolean isFinished;
 
@@ -166,6 +167,15 @@ public abstract class Board extends Observable {
 		try {
 			return obstacles;
 		}finally { //pra garantir q dou unlock por um try smp no q ta a ser feito
+			lockobs.unlock();
+		}
+	}
+
+	public LinkedList<Killer> getKillers() {
+		lockobs.lock();
+		try {
+			return killers;
+		}finally { 
 			lockobs.unlock();
 		}
 	}

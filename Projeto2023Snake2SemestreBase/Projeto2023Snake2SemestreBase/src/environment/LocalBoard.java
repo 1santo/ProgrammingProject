@@ -21,8 +21,8 @@ import game.AutomaticSnake;
 public class LocalBoard extends Board{
 	
 	private static final int NUM_SNAKES = 3;
-	private static final int NUM_OBSTACLES = 6;
-	private static final int NUM_SIMULTANEOUS_MOVING_OBSTACLES = 3;
+	private static final int NUM_OBSTACLES = 20;
+	private static final int NUM_SIMULTANEOUS_MOVING_OBSTACLES = 30;
 
 	private int random = ThreadLocalRandom.current().nextInt(1, 10);//
 

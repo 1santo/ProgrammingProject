@@ -33,4 +33,16 @@ public class ActionResult implements Serializable{//pra guardar o estado de obje
 		this.wasSuccessful = wasSuccessful;
 	}
 	
+	@Override
+	public String toString(){
+		return wasSuccessful + "," + gameEnded;
+	}
+
+	public static ActionResult fromString(String str) {
+		String[] parts = str.split(",");
+		boolean wasSuccessful = Boolean.parseBoolean(parts[0]);
+		boolean gameEnded = Boolean.parseBoolean(parts[1]);
+		return new ActionResult(wasSuccessful,gameEnded);
+	}
+	
 }

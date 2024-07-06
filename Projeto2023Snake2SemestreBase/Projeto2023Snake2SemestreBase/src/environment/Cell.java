@@ -7,6 +7,7 @@ import game.Killer;
 import game.Obstacle;
 import game.Snake;
 
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -240,6 +241,20 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 
 	public void removeSnake(Snake snake) { //
 		// TODO
+		
+		LinkedList<Cell> cells=snake.getCells();
+		snake.getCells().clear();
+		gameElement = null;
+		//mas e as outras celulas?
+		for (Cell cell : cells) {
+			try {
+				cell.release();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		cellDeoccupied.signalAll();
 	}
 
 	public void requestInitialPositioning() {

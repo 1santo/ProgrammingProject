@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import environment.Board;
 import environment.BoardPosition;
@@ -13,13 +15,15 @@ import environment.LocalBoard;
 import remote.ActionResult;
 
 public class Server {
-	public static final int SERVER_PORT =8080;
+	public static final int SERVER_PORT =8088;
 	public static final int NUM_CONNECTS=30;
 	
 	private LocalBoard board;//
 	private ServerSocket server;//
 	private boolean gameOverTemp;
 	private ActionResult action;
+	private Lock lock =new ReentrantLock();
+	
 	
 	// TODO
 	public Server(Board board) {
@@ -107,20 +111,29 @@ public class Server {
 		}
 		
 	private ActionResult handlePosition(BoardPosition position) {
-		Cell cell=board.getCell(position);
-		boolean wasSuccessful=false;
+		lock.lock();
+		try {
+			Cell cell=board.getCell(position);
+			boolean wasSuccessful=false;
+			
+				if (cell.isOcupiedByObstacle()) {
+				System.out.println("Obstacle to remove");
+				cell.removeObstacle();
+				wasSuccessful = true;
+				} else if (cell.isOcupiedBySnake() && cell.getOcuppyingSnake().wasKilled()) {
+				System.out.println("Snake to remove");
+					cell.removeSnake(cell.getOcuppyingSnake());
+				wasSuccessful = true;
+				}
+				boolean gameEnded = board.isFinished();
+				board.setChanged();
+				return new ActionResult(wasSuccessful, gameEnded);
+				
+		}finally {
+			lock.unlock();
+			System.out.println("_________________________________________teste");
+		}	
 		
-			if (cell.isOcupiedByObstacle()) {
-			cell.removeObstacle();
-			wasSuccessful = true;
-			} else if (cell.isOcupiedBySnake() && cell.getOcuppyingSnake().wasKilled()) {
-			cell.removeSnake(cell.getOcuppyingSnake());
-			wasSuccessful = true;
-			}
-		
-		boolean gameEnded = board.isFinished();
-		
-		return new ActionResult(wasSuccessful, gameEnded);
 	}
 		
 		private void closeConnection() {

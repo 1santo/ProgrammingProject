@@ -10,6 +10,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Random;
 import environment.BoardPosition;
+import environment.LocalBoard;
 
 public class Client {
 
@@ -26,6 +27,7 @@ public class Client {
 	public Client (InetAddress byName, int i) {
 		this.ipAddress=byName;
 		this.port=i;
+		
 	}
 	public void runClient() {
 		//1. connect to server
@@ -84,7 +86,7 @@ public class Client {
 						 break;
 					 }
 
-					 Thread.sleep(3000); //um tempinho pra visualizar
+					 Thread.sleep(1000); //um tempinho pra ir removendo
  
 			 }
 			}catch(SocketException e ) {	 
@@ -125,7 +127,7 @@ public class Client {
 			boardLimpo=new ObjectOutputStream(connection.getOutputStream());//aqui nao leva true
 				// no PrintWriter tinha true-> autoflush= toda vez q escrever 1 msg n vou esperar o buffer ficar cheio pra enviar, mas eu envio sim automaticamente
 				//neste preciso mesmo de indicar ***
-				
+			boardLimpo.flush();
 			//Aqui leitura do board recebido
 			boardSujo=new ObjectInputStream(connection.getInputStream());
 	
@@ -134,7 +136,8 @@ public class Client {
 		
 	
 	public static void main(String [] args) throws UnknownHostException {
-		Client client= new Client(InetAddress.getByName("localhost"), 8080); //127.0.0.1 e o endereco do localhost
+		
+		Client client= new Client(InetAddress.getByName("localhost"), 8088); //127.0.0.1 e o endereco do localhost
 		client.runClient();
 		System.out.println("HAAAAALLOOOOO CLIENTE!!!!!!!!");
 	} 

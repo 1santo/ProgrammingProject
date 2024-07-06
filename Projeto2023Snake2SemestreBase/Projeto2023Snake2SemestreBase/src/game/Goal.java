@@ -19,11 +19,14 @@ public class Goal extends GameElement  {
 	}
 	
 	//se for maior que 10 nao incrementa ne
-	public void incrementValue() throws InterruptedException {
+	public void incrementValue(){
 		if(value<MAX_VALUE) {//
+			synchronized(this) {
 			value++;
+			} //cobras vao interagir com isto
 		}//
-		else return;//
+		else System.out.println("Valor maximo atingido");
+		;//
 		
 	}
 
@@ -36,16 +39,6 @@ public class Goal extends GameElement  {
 		this.value=value;
 	}
 	
-	//no outro
-	public void captureGoal() { //
-		try {
-			incrementValue();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
 	@Override
 	protected void doInitialPositioning() {
 		

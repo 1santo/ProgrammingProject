@@ -68,7 +68,7 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 					//snake.killSnake();
 					//se o premio for o valor maximo (9) termina o jogo
 					if(getGoal().getValue()==Goal.MAX_VALUE) {
-						getGoal().captureGoal();
+					//	getGoal().captureGoal();
 						//tem q dizer q agr o sitio do goal e outro
 						//cellOccupiedByGoal.signalAll();
 						Thread t = new Thread(new Runnable() {
@@ -85,9 +85,8 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 						//goalCaptured.signalAll();
 					}
 					else {
-						int novo= getGoal().getGoalValue()+1; 
-						System.out.println("ATENCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO "+novo);//se for goal incremnta premio
-						getGoal().captureGoal(); 
+						int novo= getGoal().getGoalValue()+1; //se for goal incremnta premio, devia ser na funcao debaixo
+						snake.captureGoal(getGoal()); 
 						removeGoal(); //remove goal da celula
 						//dar notificacao q o valor daquele premio incrementou pra nova posicao poder mudar praquele sitio
 						

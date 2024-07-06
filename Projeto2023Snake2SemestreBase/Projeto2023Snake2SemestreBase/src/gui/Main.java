@@ -15,6 +15,8 @@ public class Main {
 		game.init();
 		// Launch server
 		// TODO
+		Server server = new Server();
+		
 		
 	}
 }

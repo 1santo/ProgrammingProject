@@ -54,6 +54,12 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 		return snakecells;
 	}
 	
+	
+	//
+	public void captureGoal(Goal goal) {
+		goal.incrementValue();
+	}
+	
 /*	protected void move(Cell newCell) throws InterruptedException {//
 		newCell.request(this);
 		board.setChanged();
@@ -73,7 +79,7 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 					//snakecells.add(initialCell);
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
-					System.out.println("mesma posicao q outra");
+					System.out.println("mesma posicao q outra"); //acho q nao tou a resolver da-me NoSuchElementException e nao tenho o getLast V
 					e1.printStackTrace();
 				}
 				//snakecells.add(board.getCell(init));

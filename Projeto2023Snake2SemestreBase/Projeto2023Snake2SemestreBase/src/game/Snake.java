@@ -16,26 +16,27 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 	protected int size = 5;
 	private int id;
 	private Board board;
-	private BoardPosition init; //
-	protected boolean notInMaxGoal = true; //
-	
+	private BoardPosition init; //	
 	public Snake(int id,Board board) {
 		this.id = id;
 		this.board=board;
 	}
 
 	
-	public synchronized void killSnake () { 
+	public void killSnake () { 
+		System.out.println(this+" killed is "+killed);
 		killed=true;
+		System.out.println(this+" killed is "+killed);
 		//vou interromper e parar a execucao aqui!!
 		interrupt();
+		
 		board.setChanged();
-		System.out.println("MAX GOAL CAPTURED!!!!!!!!!!!!");
+		System.out.println("kill "+this+"!!!!!!!!!!!!");
 	}
 	
 	
-	public synchronized boolean wasKilled () {  
-		return killed==true; } 
+	public boolean wasKilled () {  
+		return killed; } //==true tirei
 	
 	public int getSize() {
 		return size;
@@ -53,10 +54,10 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 		return snakecells;
 	}
 	
-	protected void move(Cell newCell) throws InterruptedException {//
+/*	protected void move(Cell newCell) throws InterruptedException {//
 		newCell.request(this);
 		board.setChanged();
-	}
+	}*/
 	
 	
 	protected void doInitialPositioning() { //
@@ -65,17 +66,18 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 				int posX = 0;
 				int posY = (int) (Math.random() * Board.HEIGHT);
 				init = new BoardPosition(posX, posY);
-				
+				System.out.println(this.getId()+" init pos: "+init);
 				try {
 					Cell initialCell = board.getCell(init);
 					initialCell.request(this);
 					//snakecells.add(initialCell);
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
+					System.out.println("mesma posicao q outra");
 					e1.printStackTrace();
 				}
 				//snakecells.add(board.getCell(init));
-				System.err.println("Snake "+getIdentification()+" starting at:"+getCells().getLast().getPosition());	
+				System.out.println("Snake "+getIdentification()+" starting at:"+getCells().getLast().getPosition());	
 				//a ultima pos da lista vai ter a cauda^
 				
 	}
@@ -100,7 +102,7 @@ public abstract class Snake extends Thread {// em vez de extend meti implement
 	}	
 	
 	//
-	private void stopRunning() {
-		board.gameOver();
-	}
+	//private void stopRunning() {
+	//	board.gameOver();
+	//}
 }

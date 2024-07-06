@@ -20,7 +20,7 @@ import game.Snake;
 public abstract class Board extends Observable {
 	protected Cell[][] cells;
 	private BoardPosition goalPosition;
-	public static final long PLAYER_PLAY_INTERVAL = 100;
+	public static final long PLAYER_PLAY_INTERVAL = 300;
 	public static final long REMOTE_REFRESH_INTERVAL = 200;
 	public static final int WIDTH = 30;
 	public static final int HEIGHT = 30;
@@ -36,7 +36,7 @@ public abstract class Board extends Observable {
 		cells = new Cell[WIDTH][HEIGHT];
 		for (int x = 0; x < WIDTH; x++) {
 			for (int y = 0; y < HEIGHT; y++) {
-				cells[x][y] = new Cell(new BoardPosition(x, y));
+				cells[x][y] = new Cell(new BoardPosition(x, y), this);
 			}
 		}
 
@@ -48,14 +48,14 @@ public abstract class Board extends Observable {
 
 	//changed to pub
 	public BoardPosition getRandomPosition() {
-		return new BoardPosition((int) (Math.random() *HEIGHT),(int) (Math.random() * HEIGHT));
+		return new BoardPosition((int) (Math.random() *((WIDTH-1-1+1)))+1,(int) (Math.random() * HEIGHT));//pra n comecar no inicio
 	}
-
+/*
 	public BoardPosition getGoalPosition() {
 		return goalPosition;
-	}
+	}*/
 
-	public void setGoalPosition(BoardPosition goalPosition) {
+	public void setGoalPosition(Goal goal, BoardPosition goalPosition) {
 		this.goalPosition = goalPosition;
 	}
 
@@ -88,13 +88,13 @@ public abstract class Board extends Observable {
 		}
 		else {
 			BoardPosition closestPositionToGoal = null; //tenho q iniciar senao n retorna
-			double minDistance = Double.MAX_VALUE;
+			double minDistance = 100000;//inicial basta ser grande o suficiente
 	
 			for (BoardPosition pos : possibleDestinations) {
-			double distance = pos.distanceTo(goalPosition);
+			double distance = pos.distanceTo(goalPosition);//v
 				if (distance < minDistance) {
-					minDistance = distance;
-					closestPositionToGoal = pos;
+					minDistance = distance; //calcula qual a distancia com base no alg euclideano q o prof deu
+					closestPositionToGoal = pos; //tou a dizer q vai ser a pos da lista de possiveis pos
 				}
 			}
 			
@@ -147,9 +147,9 @@ public abstract class Board extends Observable {
 	}*/
 
 	
-	public void removeGoal() {//
+	public void removeGoal(Goal goal) {//
 		getCell(goalPosition).removeGoal();
-		setGoalPosition(null);
+		setGoalPosition(goal,null);
 		setChanged();
 	//	goal = null;
 	}
@@ -179,7 +179,7 @@ public abstract class Board extends Observable {
 		isFinished = true;
 		for (Snake snake : snakes) {
 			snake.killSnake();//interrompe as threads snakes todas
-			
+			System.out.println("GAME OVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER");
 		}
 		setChanged();
 	}

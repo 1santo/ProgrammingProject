@@ -34,7 +34,6 @@ public class AutomaticSnake extends Snake {
 		try {
 			System.out.println("Autosnake thread board pos: "+this.getIdentification()+getBoardPosition());
 			
-			while(notInMaxGoal) {
 				System.out.println(this.getIdentification()+" mid size:"+snakecells.size());
 				try {
 					if(!getCells().isEmpty())//
@@ -45,16 +44,18 @@ public class AutomaticSnake extends Snake {
 					return;
 				}
 				Thread.sleep(Board.PLAYER_PLAY_INTERVAL); //apos mover dorme
-			}
+			
 				//&&(getBoardPosition().x!=getBoard().WIDTH)&&(getBoardPosition().y!=getBoard().HEIGHT)) {
 				//System.out.println("MOVED TO: " + nextCell().getPosition());
 				//	move(nextCell); //move to top or bottom etc cell
-			
+			if(isInterrupted()) {
+				throw new InterruptedException();
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
-		if(wasKilled()) this.interrupt();//
+		this.interrupt();//
 	
 	}
 
@@ -75,7 +76,7 @@ public class AutomaticSnake extends Snake {
 			} 
 	
 			else {
-				killSnake();
+				//killSnake();
 				return null;
 		}
 		}else {
@@ -85,8 +86,8 @@ public class AutomaticSnake extends Snake {
 	}
 	
 	
-	@Override
-	protected void move(Cell newCell) throws InterruptedException {//
+	
+	private void move(Cell newCell) throws InterruptedException {//
 		
 		try {
 			Cell cellWithHead= getCells().getFirst();

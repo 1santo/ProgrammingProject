@@ -38,14 +38,11 @@ public class LocalBoard extends Board{
 		}
 		
 		//for number of times goals got captured until they reach 9
-		
 		//criar goals
-		Goal goal = new Goal(this,random);
-	//	BoardPosition goalPos = getRandomPosition();
-        setGoalPosition(goal.pos);
-      //  addGameElement(goal); 
-      //  System.out.println("Goal of "+goal.getGoalValue()+"pos: "+goalPos);
-      //  setChanged();
+        for(int i=0;i<5;i++) {
+        Goal goal2 = new Goal(this,random);
+        setGoalPosition(goal2,goal2.pos);
+        }
 	}
 
 	// synchronization in cell

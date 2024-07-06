@@ -7,6 +7,7 @@ import game.Killer;
 import game.Obstacle;
 import game.Snake;
 
+import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -17,6 +18,7 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 	//pra qnd formos mover no jogador, saber qual o lock da cell
 //que adquirimos primeiro
 	private BoardPosition position;
+	private Board board;
 	private Snake ocuppyingSnake = null;
 	private GameElement gameElement=null;
 	
@@ -27,9 +29,10 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 	private Condition goalCaptured = lockC.newCondition();//vai notificar que goal ja foi captured pra nao continuarem a andar
 
 	
-		public Cell(BoardPosition position)  {
-		super();
+		public Cell(BoardPosition position,Board board)  {
+		//super();
 		this.position = position;
+		this.board=board;
 	}
 
 	//
@@ -68,14 +71,33 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 						getGoal().captureGoal();
 						//tem q dizer q agr o sitio do goal e outro
 						//cellOccupiedByGoal.signalAll();
-						snake.killSnake();
-						snake.getBoard().gameOver(); //termina o jogo
+						Thread t = new Thread(new Runnable() {
+
+							@Override
+							public void run() {
+								snake.getBoard().gameOver();
+							}
+							
+						});
+						t.start();
+						
+						//termina o jogo
 						//goalCaptured.signalAll();
 					}
 					else {
-						getGoal().captureGoal(); //se for goal incremnta premio
+						int novo= getGoal().getGoalValue()+1; 
+						System.out.println("ATENCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO "+novo);//se for goal incremnta premio
+						getGoal().captureGoal(); 
 						removeGoal(); //remove goal da celula
+						//dar notificacao q o valor daquele premio incrementou pra nova posicao poder mudar praquele sitio
+						
 						//falta meter objeto goal noutro sitio
+						
+					//	Random random=new Random();
+					//	int novo=random.nextInt(9-1+1)+1;
+						Goal goal = new Goal(board,novo);
+				        board.setGoalPosition(goal,goal.pos);
+				        goal.setGoalValue(novo);
 					}
 						
 				}
@@ -183,7 +205,11 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 
 	public Goal removeGoal() { //
 		Goal goal = (Goal) gameElement;
+		System.out.println("irei remover goal> "+goal.getCells());
 		gameElement = null;
+		System.out.println("irei remover goal> "+goal.getCells());
+		goal.getCells().removeLast();
+		System.out.println("removi goal> "+goal.getCells());
 		return goal;
 	}
 

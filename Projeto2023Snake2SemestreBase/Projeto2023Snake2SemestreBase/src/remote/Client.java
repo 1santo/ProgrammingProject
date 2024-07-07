@@ -4,38 +4,43 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Random;
+import java.util.Scanner;
+
+import environment.Board;
 import environment.BoardPosition;
 import environment.LocalBoard;
 
 public class Client {
 
 	private InetAddress ipAddress;
-	private int port;
+	private int CLIENT_PORT;
 	//private LocalBoard boardLimpo1;
 	//private LocalBoard boardSujo1;
 	private ActionResult action;
-	ObjectInputStream boardSujo;
-	ObjectOutputStream boardLimpo;
-	
+	//private ObjectInputStream boardSujo;
+	//private ObjectOutputStream boardLimpo;
+	private Scanner boardLimpo;
+	private PrintWriter boardPotencialmenteSujo;
 	private Socket connectionSocket;
 	
 	public Client (InetAddress byName, int i) {
 		this.ipAddress=byName;
-		this.port=i;
+		this.CLIENT_PORT=i;
 		
 	}
 	public void runClient() {
 		//1. connect to server
 		try {
-			connectionSocket= new Socket(ipAddress,port);
+			connectionSocket= new Socket(ipAddress,CLIENT_PORT);
 			
 			//2. get board updates - communication
-			getBoardUpdates();
+			getStreamChannel();
 			//3. process connections - changes in boards on both sides
 			processConnection();
 
@@ -48,11 +53,26 @@ public class Client {
 			closeConnection();
 		}
 	}
+	
+	
+	//inicializar os canais com a connectionsocket
+	private void getStreamChannel() throws IOException {
+		//Atualizacao/limpeza do board aqui
+		boardPotencialmenteSujo=new PrintWriter(connectionSocket.getOutputStream(),true);//aqui nao leva true
+		//true-> autoflush= toda vez q gerar 1 msg (ActionResult) n vai esperar o buffer ficar cheio pra enviar, mas envia sim automaticamente
+		//no ObjectOutputStream preciso mesmo de indicar ***
+		//boardLimpo.flush();
+		
+		
+		//Aqui leitura do board recebido
+		boardLimpo=new Scanner(connectionSocket.getInputStream());
+
+	}
 		
 	private void closeConnection() {
 		try {
-			if(boardSujo !=null)//quando fecho o board?
-				boardSujo.close();
+			if(boardPotencialmenteSujo !=null)//quando fecho o board?
+				boardPotencialmenteSujo.close();
 			if(boardLimpo!=null)
 				boardLimpo.close();
 			if(connectionSocket !=null)
@@ -63,16 +83,48 @@ public class Client {
 	}
 		
 		
-		//para ir buscar os canais
+		//para ir buscar oq ta a ser comunicado entre canais
 		private void processConnection(){
-			try {
-			 Random random = new Random();
+		
+			//new
+			while(true) {
+			Random random = new Random();
+			String randomX = String.valueOf(random.nextInt(Board.WIDTH));
+			String randomY = String.valueOf(random.nextInt(Board.HEIGHT));
+			String coordinates = "("+randomX+","+randomY+")";
+			
+			boardPotencialmenteSujo.println(coordinates);
+			
+			//action=boardPotencialmenteSujo.;
+			
+				if(action.wasSuccessful()){
+					System.out.println("Elemento removido na pos: "+coordinates);
+				} else{
+					System.out.println("Nada removido: "+coordinates);
+				}
+
+				if(action.isGameEnded()){
+					System.out.println("Game over");
+					break;
+				}
+
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} //um tempinho pra ir removendo 
+			}
+			
+			/*try {
+				Random random = new Random();
 
 			 while (true){
 				 BoardPosition randomPosition = new BoardPosition(random.nextInt(30), random.nextInt(30));
-
-					boardLimpo.writeObject(randomPosition);
-					boardLimpo.flush();
+				 
+				 
+				 	boardLimpo.writeObject(randomPosition);
+					boardLimpo.flush(); //***
 					ActionResult action =(ActionResult)boardSujo.readObject();
 
 					 if(action.wasSuccessful()){
@@ -86,7 +138,7 @@ public class Client {
 						 break;
 					 }
 
-					 Thread.sleep(1000); //um tempinho pra ir removendo
+					 Thread.sleep(1000); //um tempinho pra ir removendo 
  
 			 }
 			}catch(SocketException e ) {	 
@@ -95,51 +147,16 @@ public class Client {
 				e.printStackTrace();
 			}finally {
 				closeConnection(); //ter a certeza q fecha
-			} 
+			} */
 
-			
-			/*
-			//Board
-			for (int i = 0; i < 1000; i++) {//em vez de 1000 tam do board
-				//outro for por ser board, x e y
-				//escrita
-				//acao do boardLimpo
-				System.out.println("enviado  o board limpo");
-				//leitura do eco
-				System.out.println("leitura do board sujo do cliente");
-				
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}//um tempinho pra visualizar
-				
-			}
-			//finish connection
-			action.setGameEnded(true);
-			
-			*/
 		}
-		
-		private void getBoardUpdates() throws IOException {
-			//Atualizacao/limpeza do board aqui
-			boardLimpo=new ObjectOutputStream(connectionSocket.getOutputStream());//aqui nao leva true
-				// no PrintWriter tinha true-> autoflush= toda vez q escrever 1 msg n vou esperar o buffer ficar cheio pra enviar, mas eu envio sim automaticamente
-				//neste preciso mesmo de indicar ***
-			boardLimpo.flush();
-			//Aqui leitura do board recebido
-			boardSujo=new ObjectInputStream(connectionSocket.getInputStream());
-	
-		}
-		
-		
+
 	
 	public static void main(String [] args) throws UnknownHostException {
 		
 		Client client= new Client(InetAddress.getByName("localhost"), 8088); //127.0.0.1 e o endereco do localhost
 		client.runClient();
-		System.out.println("HAAAAALLOOOOO CLIENTE!!!!!!!!");
+		System.out.println(client+" just joined*********************************");
 	} 
 }
 

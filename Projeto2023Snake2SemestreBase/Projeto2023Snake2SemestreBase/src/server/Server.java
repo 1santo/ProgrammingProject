@@ -81,7 +81,9 @@ public class Server {
 			boardLimpo=new PrintWriter(connection.getOutputStream(),true);
 				//true-> autoflush= toda vez q gerar 1 msg (ActionResult) n vai esperar o buffer ficar cheio pra enviar, mas envia sim automaticamente
 				//no ObjectOutputStream preciso mesmo de indicar ***
-				
+				//boardLimpo.flush();
+
+			
 			//Aqui leitura do board recebido
 			boardPotencialmenteSujo=new Scanner(connection.getInputStream());
 		}
@@ -103,7 +105,46 @@ public class Server {
 					
 					//aqui se o cliente entretanto mover //Espera!! posso criar uma thread dedicada pra fzr esta espera
 					//action = handlePosition(position);
-					action = handlePosition(pos);
+					Thread t = new Thread(new Runnable () {
+						public void run() {
+							action = handlePosition(pos);
+						}
+						
+						private ActionResult handlePosition(String position) {
+							//private ActionResult handlePosition(BoardPosition position) {
+							
+							//este metodo acede a varias celulas ao mesmo tempo
+							//meter aqui por cada celula 1 cadeado
+							//ha possibilidade de celulas terem ao msm tempo o lock?
+							
+								//new
+								String [] coordinates=position.split(",");
+								int x=Integer.parseInt(coordinates[0]);
+								int y=Integer.parseInt(coordinates[1]);
+								BoardPosition pos=new BoardPosition(x,y);
+								
+								
+								Cell cell=board.getCell(pos);
+								boolean wasSuccessful=false;
+									
+								if (cell.isOcupiedByObstacle()) {
+									System.out.println("Obstacle to remove");
+									cell.removeObstacle();
+									wasSuccessful = true;
+								} else if (cell.isOcupiedBySnake() && cell.getOcuppyingSnake().wasKilled()) {
+									System.out.println("Snake to remove");
+									cell.removeSnake(cell.getOcuppyingSnake());
+									wasSuccessful = true;
+								}
+									boolean gameEnded = board.isFinished();
+									board.setChanged();
+									System.out.println("_________________________________________teste");
+								return new ActionResult(wasSuccessful, gameEnded);
+							}
+								
+					});
+					t.start();
+
 
 					//aqui tem q fzr eco do board pros outros clientes
 					
@@ -126,34 +167,7 @@ public class Server {
 		}
 		
 		
-	private ActionResult handlePosition(String position) {
-	//private ActionResult handlePosition(BoardPosition position) {
-
-		//new
-		String [] coordinates=position.split(",");
-		int x=Integer.parseInt(coordinates[0]);
-		int y=Integer.parseInt(coordinates[1]);
-		BoardPosition pos=new BoardPosition(x,y);
-		
-		
-		Cell cell=board.getCell(pos);
-		boolean wasSuccessful=false;
-			
-		if (cell.isOcupiedByObstacle()) {
-			System.out.println("Obstacle to remove");
-			cell.removeObstacle();
-			wasSuccessful = true;
-		} else if (cell.isOcupiedBySnake() && cell.getOcuppyingSnake().wasKilled()) {
-			System.out.println("Snake to remove");
-			cell.removeSnake(cell.getOcuppyingSnake());
-			wasSuccessful = true;
-		}
-			boolean gameEnded = board.isFinished();
-			board.setChanged();
-			System.out.println("_________________________________________teste");
-		return new ActionResult(wasSuccessful, gameEnded);
-	}
-		
+	
 	
 	private void closeConnection() {
 		try {

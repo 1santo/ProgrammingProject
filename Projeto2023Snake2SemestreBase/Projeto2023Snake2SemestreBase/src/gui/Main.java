@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import javax.net.ssl.StandardConstants;
 
+import environment.Board;
 import environment.LocalBoard;
 import server.Server;
 
@@ -15,7 +16,7 @@ public class Main {
 		game.init();
 		// Launch server
 		// TODO
-		Server server = new Server(board);
+		Server server = new Server((LocalBoard)board);
 		System.out.println("______________THIS IS THE START OF THE SERVER____________"+server);
 		
 	}

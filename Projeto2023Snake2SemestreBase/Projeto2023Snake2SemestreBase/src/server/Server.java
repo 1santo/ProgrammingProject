@@ -18,16 +18,15 @@ public class Server {
 	public static final int SERVER_PORT =8088;
 	public static final int NUM_CONNECTS=30;
 	
-	private LocalBoard board;//
+	private Board board;//
 	private ServerSocket server;//
 	private boolean gameOverTemp;
 	private ActionResult action;
-	private Lock lock =new ReentrantLock();
 	
 	
 	// TODO
 	public Server(Board board) {
-		this.board=(LocalBoard) board;
+		this.board= board;
 		runServer();
 		System.out.println("SERVIDORRRRRRRRRRRRRRRRRRRRRRRRRRRRRR A CORRERRRRRRRR-----------------");
 	}
@@ -60,8 +59,8 @@ public class Server {
 
 	private class ConnectionHandler extends Thread{
 		private Socket connection;
-		LocalBoard boardLimpo1;
-		LocalBoard boardSujo1=board;
+		//LocalBoard boardLimpo1;
+		//LocalBoard boardSujo1=board;
 		ObjectInputStream boardSujo;
 		ObjectOutputStream boardLimpo;
 		
@@ -111,29 +110,23 @@ public class Server {
 		}
 		
 	private ActionResult handlePosition(BoardPosition position) {
-		lock.lock();
-		try {
-			Cell cell=board.getCell(position);
-			boolean wasSuccessful=false;
+
+		Cell cell=board.getCell(position);
+		boolean wasSuccessful=false;
 			
-				if (cell.isOcupiedByObstacle()) {
-				System.out.println("Obstacle to remove");
-				cell.removeObstacle();
-				wasSuccessful = true;
-				} else if (cell.isOcupiedBySnake() && cell.getOcuppyingSnake().wasKilled()) {
-				System.out.println("Snake to remove");
-					cell.removeSnake(cell.getOcuppyingSnake());
-				wasSuccessful = true;
-				}
-				boolean gameEnded = board.isFinished();
-				board.setChanged();
-				return new ActionResult(wasSuccessful, gameEnded);
-				
-		}finally {
-			lock.unlock();
+		if (cell.isOcupiedByObstacle()) {
+			System.out.println("Obstacle to remove");
+			cell.removeObstacle();
+			wasSuccessful = true;
+		} else if (cell.isOcupiedBySnake() && cell.getOcuppyingSnake().wasKilled()) {
+			System.out.println("Snake to remove");
+			cell.removeSnake(cell.getOcuppyingSnake());
+			wasSuccessful = true;
+		}
+			boolean gameEnded = board.isFinished();
+			board.setChanged();
 			System.out.println("_________________________________________teste");
-		}	
-		
+		return new ActionResult(wasSuccessful, gameEnded);
 	}
 		
 		private void closeConnection() {

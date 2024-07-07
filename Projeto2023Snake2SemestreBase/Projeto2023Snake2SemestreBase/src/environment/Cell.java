@@ -110,8 +110,10 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 				cellDeoccupied.signalAll();  //avisa quem estava a espera q n ta ocupada
 			}
 			else {//if ocupada por snake
+				
+				while(isOcupied() | isOccupiedByKiller()) {//mudei
 				cellDeoccupied.await(); //espera q a cel fique desocupada
-			
+				}
 			}
 			
 		}finally {
@@ -255,6 +257,7 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 			}
 		}
 		cellDeoccupied.signalAll();
+		
 	}
 
 	public void requestInitialPositioning() {

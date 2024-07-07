@@ -1,8 +1,4 @@
-/environment/
-/game/
-/ghost.png
-/gui/
-/killer.png
-/obstacle.png
-/remote/
 /server/
+/environment/
+/gui/
+/game/

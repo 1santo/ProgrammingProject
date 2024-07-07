@@ -29,7 +29,7 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 	private Condition cellOccupiedByGoal = lockC.newCondition();//vai notificar que o sitio do goal é outro	
 	private Condition goalCaptured = lockC.newCondition();//vai notificar que goal ja foi captured pra nao continuarem a andar
 
-	
+	//se todas as cobras estao a emperradas uma na outra, obstacle nao move
 		public Cell(BoardPosition position,Board board)  {
 		//super();
 		this.position = position;
@@ -161,8 +161,13 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 	public void setGameElement(GameElement element) throws InterruptedException {
 		lockC.lock();
 		try {
-			while(isOcupied() || isOcupiedByGoal()) cellDeoccupied.await();
-				if(element instanceof Obstacle){
+			while(isOcupied() || isOcupiedByGoal()) cellDeoccupied.await();//deadlock se tiver no lugar de cobra emperrada
+			/*while(isOcupied() || isOcupiedByGoal()) {
+			if(isOcupiedBySnake())setGameElement(element);
+				else cellDeoccupied.await();
+			}*///Potentially dangerous stack overflow in ReservedStackAccess
+			
+			if(element instanceof Obstacle){
 					gameElement=element; //celula passa a ter
 					Obstacle obstacle = (Obstacle) element;
 					obstacle.getCells().addFirst(this); //metodo de GameElement mas quero so pra meter no obstacle

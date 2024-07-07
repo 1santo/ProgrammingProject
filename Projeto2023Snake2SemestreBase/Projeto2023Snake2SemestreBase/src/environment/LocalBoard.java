@@ -77,7 +77,8 @@ public class LocalBoard extends Board{
 				executor.submit(new ObstacleMover(obs,this,barrier));
 			}
 		}
-		executor.shutdown();
+		executor.shutdown(); //termina graciosamente
+		System.out.println("TERMINOU AQUI ______ | "+this.getClass());
 		setChanged();
 	}
 

@@ -57,5 +57,14 @@ public class BoardPosition implements Serializable, Comparable<BoardPosition>{//
 	        return Integer.compare(this.x, other.x);
 	}
 	
+	//
+	
+	public static BoardPosition fromString(String str) {
+		String[] parts = str.split(",");
+		int x = Integer.parseInt(parts[0]);
+		int y = Integer.parseInt(parts[1]);
+		return new BoardPosition(x, y);
+	}
+	
 	
 }

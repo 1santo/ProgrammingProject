@@ -15,7 +15,7 @@ import remote.ActionResult;
 
 public class Server {
 
-	public static final int SERVER_PORT =8084;
+	public static final int SERVER_PORT =8080;
 	public static final int NUM_CONNECTS=30;
 	
 	private Board board;//
@@ -93,85 +93,91 @@ public class Server {
 		//enquanto jogo nao termina vai haver esta comunicacao
 		private void processConnection() throws IOException{ //pode n ter nd pra ler/mandar
 
-			do {
+			while(!gameOver) {
 				//leitura de potencial coordenada do board suja q pode ter obstaculos cobras mortas etc
 				String pos;
-				//BoardPosition position;
-				
+				BoardPosition position;
+				System.out.println("OI");
 				//try {
-				
+					//boardPotencialmenteSujo.useDelimiter("\\),\\(");
+					
 					pos=boardPotencialmenteSujo.nextLine(); //deteta separador automaticamente
 					//position = (BoardPosition)boardPotencialmenteSujo.readObject(); //readObject lanca excecao
 					//excecao ClassNotFoundException e
+					System.out.println(pos);
+					//position=new BoardPosition(, );
 					
-					//aqui se o cliente entretanto mover //Espera!! posso criar uma thread dedicada pra fzr esta espera
-					//action = handlePosition(position);
-					Thread t = new Thread(new Runnable () {
-						public void run() {
-							action = handlePosition(pos);
-						}
+					while(boardPotencialmenteSujo.hasNext()) {
+						pos = boardPotencialmenteSujo.nextLine();
 						
-						private ActionResult handlePosition(String position) {
-							//private ActionResult handlePosition(BoardPosition position) {
-							
-							//este metodo acede a varias celulas ao mesmo tempo
-							//meter aqui por cada celula 1 cadeado
-							//ha possibilidade de celulas terem ao msm tempo o lock?
-							
-								//new
-								String [] coordinates=position.split(",");
-								int x=1;
-								int y=4;
-								//int x=Integer.parseInt(coordinates[0]); //problematic
-								//int y=Integer.parseInt(coordinates[1]); //problematic
-								BoardPosition pos=new BoardPosition(x,y);
-								
-								
-								Cell cell=board.getCell(pos);
-								boolean wasSuccessful=false;
-									
-								if (cell.isOcupiedByObstacle()) {
-									System.out.println("Obstacle to remove");
-//									cell.removeObstacle(); //coordenacao?
-									wasSuccessful = true;
-								} else if (cell.isOcupiedBySnake() && cell.getOcuppyingSnake().wasKilled()) {
-									System.out.println("Snake to remove");
-									cell.removeSnake(cell.getOcuppyingSnake()); //esta parte coordenacao
-									wasSuccessful = true;
-								}
-									boolean gameEnded = board.isFinished();
-									board.setChanged();
-									System.out.println("_________________________________________teste");
-								return new ActionResult(wasSuccessful, gameEnded);
+						System.out.println("TETS");
+						position = BoardPosition.fromString(pos);
+						System.out.println("oi"+position);
+						
+						action = handlePosition(position);
+						
+						//aqui se o cliente entretanto mover //Espera!! posso criar uma thread dedicada pra fzr esta espera
+						//action = handlePosition(position);
+						Thread t = new Thread(new Runnable () {
+							public void run() {
+								//action = handlePosition(position);
 							}
+							
+							
+									
+						});
+						t.start();		
+
+						
+						//aqui tem q fzr eco do board pros outros clientes
+						
+						boardLimpo.println(action.toString()); //problematic
+						//boardLimpo.writeObject(action);
+						//boardLimpo.flush(); //***
+						System.out.println("TESTE do que cliente mandou ");
 								
-					});
-					t.start();
+
+						if (action.isGameEnded()) {
+							gameOver=true;
+							System.out.println("XXXXXXXXXXXXXXXXXX_GAME OVER_XXXXXXXXXXXXXXXXXXX");
+		                  }
+					}
 
 
-					//aqui tem q fzr eco do board pros outros clientes
-					
-					boardLimpo.println(action.toString()); //problematic
-					//boardLimpo.writeObject(action);
-					//boardLimpo.flush(); //***
-					System.out.println("TESTE do que cliente mandou ");
-					
-					
 			/*	} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} */
-				
-				if (action.isGameEnded()) {
-					gameOver=true;
-					System.out.println("XXXXXXXXXXXXXXXXXX_GAME OVER_XXXXXXXXXXXXXXXXXXX");
-                  }
-				
-			} while(!gameOver); //enquanto nao ha gameOver
+
+		}
 		}
 		
-		
 	
+		//metodo para a thread
+		private ActionResult handlePosition(BoardPosition position) {
+			//private ActionResult handlePosition(BoardPosition position) {
+			
+			//este metodo acede a varias celulas ao mesmo tempo
+			//meter aqui por cada celula 1 cadeado
+			//ha possibilidade de celulas terem ao msm tempo o lock?
+						
+				Cell cell=board.getCell(position);
+				boolean wasSuccessful=false;
+					
+				if (cell.isOcupiedByObstacle()) {
+					System.out.println("Obstacle to remove");
+//					cell.removeObstacle(); //coordenacao?
+					wasSuccessful = true;
+				} else if (cell.isOcupiedBySnake() && cell.getOcuppyingSnake().wasKilled()) {
+					System.out.println("Snake to remove");
+					cell.removeSnake(cell.getOcuppyingSnake()); //esta parte coordenacao
+					wasSuccessful = true;
+				}
+					boolean gameEnded = board.isFinished();
+					board.setChanged();
+					System.out.println("_________________________________________teste");
+				return new ActionResult(wasSuccessful, gameEnded);
+			}
 	
 	private void closeConnection() {
 		try {

@@ -33,11 +33,17 @@ public class ObstacleMover extends Thread {
 		for(int i=0; i< obstacle.getRemainingMoves();i++) {
 			try {
 				BoardPosition pos=board.getRandomPosition();
-				move(board.getCell(pos));
-				obstacle.decrementRemainingMoves();
-				board.setChanged();
-				//numberWaiting diz qts threads estao em espera na barreira
-				//ate q todas acabem
+				Cell cell=board.getCell(pos);
+				if(cell.isOcupiedBySnake()) {
+					pos=board.getRandomPosition();
+					System.out.println(obstacle+" trying to occupy snake cell.");}
+				else {
+					move(cell);
+					obstacle.decrementRemainingMoves();
+					board.setChanged();
+					//numberWaiting diz qts threads estao em espera na barreira
+					//ate q todas acabem
+				}
 				try {
 					barrier.await();
 				} catch (BrokenBarrierException e) {

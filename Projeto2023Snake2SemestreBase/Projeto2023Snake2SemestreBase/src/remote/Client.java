@@ -88,22 +88,30 @@ public class Client {
 		private void processConnection(){
 		
 			try {
+			Random random = new Random();
 			//new
 			while(!GameOver) {
-			Random random = new Random();
+				System.out.println("Teste");
+			/*
+			
 			String randomX = String.valueOf(random.nextInt(Board.WIDTH));
 			String randomY = String.valueOf(random.nextInt(Board.HEIGHT));
 			String coordinates = "("+randomX+","+randomY+")";
 			boardPotencialmenteSujo.println(coordinates);
+			*/
+				BoardPosition coordinates = new BoardPosition(random.nextInt(30), random.nextInt(30));
+				boardPotencialmenteSujo.println(coordinates.toString());
 			
-			
+				System.out.println(coordinates);
 			//ler do server
 			//new
 			if(boardLimpo.hasNextLine()) {
-				
+				System.out.println("AQUI");
 			String seeRespostaActionServer=boardLimpo.nextLine();
 			action=ActionResult.fromString(seeRespostaActionServer);
 			
+			System.out.println(action);
+			System.out.println(action.isGameEnded());
 			//\\
 				if(action.wasSuccessful()){
 					System.out.println("Elemento removido na pos: "+coordinates);
@@ -167,7 +175,7 @@ public class Client {
 	
 	public static void main(String [] args) throws UnknownHostException {
 		
-		Client client= new Client(InetAddress.getByName("localhost"), 8084); //127.0.0.1 e o endereco do localhost
+		Client client= new Client(InetAddress.getByName("localhost"), 8080); //127.0.0.1 e o endereco do localhost
 		client.runClient();
 		System.out.println(client+" just joined*********************************");
 	} 

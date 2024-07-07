@@ -11,7 +11,7 @@ public class Goal extends GameElement  {
 	private int random = ThreadLocalRandom.current().nextInt(1, 10);//
 	public Goal( Board board2, int value) {
 		super(board2);
-		this.value=1;//
+		this.value=9;//
 		doInitialPositioning();//
 	}
 	public int getValue() {

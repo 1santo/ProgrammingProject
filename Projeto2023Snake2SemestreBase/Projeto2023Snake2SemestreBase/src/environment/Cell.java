@@ -72,16 +72,9 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 					//	getGoal().captureGoal();
 						//tem q dizer q agr o sitio do goal e outro
 						//cellOccupiedByGoal.signalAll();
-						Thread t = new Thread(new Runnable() {
 
-							@Override
-							public void run() {
 								snake.getBoard().gameOver();
-							}
-							
-						});
-						t.start();
-						
+
 						//termina o jogo
 						//goalCaptured.signalAll();
 					}
@@ -106,7 +99,9 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 			
 			else if(isOccupiedByKiller()) {
 				//System.out.println("DIEEEEE");
+				System.out.println(snake+"____ will die by Killer");
 				snake.killSnake(); //mata cobra
+				System.out.println(snake+"____ dead by Killer");
 				cellDeoccupied.signalAll();  //avisa quem estava a espera q n ta ocupada
 			}
 			else {//if ocupada por snake

@@ -28,7 +28,7 @@ public abstract class Board extends Observable {
 	protected LinkedList<Obstacle> obstacles= new LinkedList<Obstacle>(); //
 	protected LinkedList<Killer> killers= new LinkedList<Killer>(); //
 	protected LinkedList<GameElement> gameElements= new LinkedList<GameElement>(); //
-	protected boolean isFinished;
+	protected volatile boolean isFinished;
 
 	private int random = ThreadLocalRandom.current().nextInt(1, 10);//ThreadLocalRandom efficient when working w multiple threads
 	private Lock locksnakes = new ReentrantLock();//teste
@@ -187,11 +187,17 @@ public abstract class Board extends Observable {
 
 	//
 	public void gameOver() {
-		isFinished = true;
+		
+		
+		//nao funciona pq as snakes estao e' na lista de cells e nao
+		//na lista de snakes
 		for (Snake snake : snakes) {
+			System.out.println(snakes+"____ all must die");
 			snake.killSnake();//interrompe as threads snakes todas
+			System.out.println(snakes+"____ all died");
 			System.out.println("GAME OVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEER");
 		}
+		isFinished = true;
 		setChanged();
 	}
 	

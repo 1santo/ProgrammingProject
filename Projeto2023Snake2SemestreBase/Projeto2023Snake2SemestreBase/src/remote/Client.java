@@ -175,7 +175,7 @@ public class Client {
 	
 	public static void main(String [] args) throws UnknownHostException {
 		
-		Client client= new Client(InetAddress.getByName("localhost"), 8080); //127.0.0.1 e o endereco do localhost
+		Client client= new Client(InetAddress.getByName("localhost"), 8081); //127.0.0.1 e o endereco do localhost
 		client.runClient();
 		System.out.println(client+" just joined*********************************");
 	} 

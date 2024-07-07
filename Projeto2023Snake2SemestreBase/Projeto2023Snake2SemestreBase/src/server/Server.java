@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.locks.Lock;
 
 import environment.Board;
 import environment.BoardPosition;
@@ -15,7 +16,7 @@ import remote.ActionResult;
 
 public class Server {
 
-	public static final int SERVER_PORT =8080;
+	public static final int SERVER_PORT =8081;
 	public static final int NUM_CONNECTS=30;
 	
 	private Board board;//
@@ -117,7 +118,10 @@ public class Server {
 				//action = handlePosition(position);
 				Thread t = new Thread(new Runnable () {
 					public void run() {
+						
+						//System.out.println("______887868576THREAD VAI TRATAR DAQUELA CELULA");
 						action = handlePosition(position);
+						//System.out.println("____686THREAD TRATOU DAQUELA CELULA");
 						//aqui tem q fzr eco do board pros outros clientes
 						boardLimpo.println(action.toString()); //problematic
 						//boardLimpo.writeObject(action);
@@ -152,14 +156,27 @@ public class Server {
 						
 				Cell cell=board.getCell(position);
 				boolean wasSuccessful=false;
-					
+					Lock lock=cell.getLock();
 				if (cell.isOcupiedByObstacle()) {
 					System.out.println("Obstacle to remove");
-//					cell.removeObstacle(); //coordenacao?
+					lock.lock();
+					try {
+						cell.removeObstacle(); //coordenacao?
+					}finally {
+						lock.unlock();
+					}
+					System.out.println("_______________Obstacle Actually Removed>>>"+cell.getGameElement());
 					wasSuccessful = true;
 				} else if (cell.isOcupiedBySnake() && cell.getOcuppyingSnake().wasKilled()) {
 					System.out.println("Snake to remove");
+					lock.lock();
+					try {
 					cell.removeSnake(cell.getOcuppyingSnake()); //esta parte coordenacao
+					}finally {
+						lock.unlock();
+					}
+					
+					System.out.println("_______________Snake Actually Removed>>>"+cell.getOcuppyingSnake());
 					board.setChanged();
 					wasSuccessful = true;
 				}

@@ -248,20 +248,25 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 
 	public void removeSnake(Snake snake) { //
 		// TODO
-		
-		LinkedList<Cell> cells=snake.getCells();
-		snake.getCells().clear();
-		gameElement = null;
-		//mas e as outras celulas?
-		for (Cell cell : cells) {
-			try {
-				cell.release();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		lockC.lock();
+		try {
+			LinkedList<Cell> cells=snake.getCells();
+			snake.getCells().clear();
+			gameElement = null;
+			//mas e as outras celulas?
+			for (Cell cell : cells) {
+				try {
+					cell.release();
+					cellDeoccupied.signalAll();
+					System.out.println("Snake removed from "+cell.getPosition()+"____ | "+this.getClass());
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
+		}finally {
+			lockC.unlock();
 		}
-		cellDeoccupied.signalAll();
 		
 	}
 

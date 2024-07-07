@@ -101,55 +101,44 @@ public class Server {
 				//try {
 					//boardPotencialmenteSujo.useDelimiter("\\),\\(");
 					
-					pos=boardPotencialmenteSujo.nextLine(); //deteta separador automaticamente
-					//position = (BoardPosition)boardPotencialmenteSujo.readObject(); //readObject lanca excecao
-					//excecao ClassNotFoundException e
-					System.out.println(pos);
-					//position=new BoardPosition(, );
-					
-					while(boardPotencialmenteSujo.hasNext()) {
-						pos = boardPotencialmenteSujo.nextLine();
+				pos=boardPotencialmenteSujo.nextLine(); //deteta separador automaticamente
+				//position = (BoardPosition)boardPotencialmenteSujo.readObject(); //readObject lanca excecao
+				//excecao ClassNotFoundException e
+				System.out.println(pos);
+				//position=new BoardPosition(, );
 						
-						System.out.println("TETS");
-						position = BoardPosition.fromString(pos);
-						System.out.println("oi"+position);
+				System.out.println("TETS");
+				position = BoardPosition.fromString(pos);
+				System.out.println("oi"+position);
 						
+				//action = handlePosition(position);
+				
+				//aqui se o cliente entretanto mover //Espera!! posso criar uma thread dedicada pra fzr esta espera
+				//action = handlePosition(position);
+				Thread t = new Thread(new Runnable () {
+					public void run() {
 						action = handlePosition(position);
-						
-						//aqui se o cliente entretanto mover //Espera!! posso criar uma thread dedicada pra fzr esta espera
-						//action = handlePosition(position);
-						Thread t = new Thread(new Runnable () {
-							public void run() {
-								//action = handlePosition(position);
-							}
-							
-							
-									
-						});
-						t.start();		
-
-						
 						//aqui tem q fzr eco do board pros outros clientes
-						
 						boardLimpo.println(action.toString()); //problematic
 						//boardLimpo.writeObject(action);
 						//boardLimpo.flush(); //***
 						System.out.println("TESTE do que cliente mandou ");
-								
-
+										
 						if (action.isGameEnded()) {
 							gameOver=true;
-							System.out.println("XXXXXXXXXXXXXXXXXX_GAME OVER_XXXXXXXXXXXXXXXXXXX");
-		                  }
-					}
-
-
+								System.out.println("XXXXXXXXXXXXXXXXXX_GAME OVER_XXXXXXXXXXXXXXXXXXX");
+						}
+					}			
+				});
+				t.start();
+				
+				
+			}
 			/*	} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} */
 
-		}
 		}
 		
 	
@@ -171,6 +160,7 @@ public class Server {
 				} else if (cell.isOcupiedBySnake() && cell.getOcuppyingSnake().wasKilled()) {
 					System.out.println("Snake to remove");
 					cell.removeSnake(cell.getOcuppyingSnake()); //esta parte coordenacao
+					board.setChanged();
 					wasSuccessful = true;
 				}
 					boolean gameEnded = board.isFinished();

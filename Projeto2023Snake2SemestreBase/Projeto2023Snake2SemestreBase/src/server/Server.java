@@ -3,15 +3,14 @@ package server;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Scanner;
 
 import environment.Board;
 import environment.BoardPosition;
 import environment.Cell;
-import environment.LocalBoard;
 import remote.ActionResult;
 
 public class Server {
@@ -20,7 +19,7 @@ public class Server {
 	
 	private Board board;//
 	private ServerSocket server;//
-	private boolean gameOverTemp;
+	private boolean gameOver;
 	private ActionResult action;
 	
 	
@@ -28,7 +27,7 @@ public class Server {
 	public Server(Board board) {
 		this.board= board;
 		runServer();
-		System.out.println("SERVIDORRRRRRRRRRRRRRRRRRRRRRRRRRRRRR A CORRERRRRRRRR-----------------");
+		System.out.println("aqui nao aparece nd pois o run ta smp while true");
 	}
 	
 	private void runServer() {
@@ -42,76 +41,102 @@ public class Server {
 	} catch (IOException e) {
 		e.printStackTrace();
 
-	}			
+	}	
+		finally {
+			
+		}
 	}
 
+	//esperar por conexoes e' criar socket aceite pelo server
+	//e dps ter uma thread dedicadaa a gerir conexoes
 	private void waitForConnections() throws IOException {
-		System.out.println("Waiting for connections....");
-		Socket connection = server.accept(); ///Espera!!!
+		System.out.println("______________________________-> Waiting for connections....<-___________________");
+		Socket connectionSocket = server.accept(); ///Espera!!!
 		
 		//Create a new connection handler -> vai fzr a gestao da conexao de 1 cliente, thread dedicada para aquela conexao, aquela e' o connect
-		ConnectionHandler handler = new ConnectionHandler(connection);
+		ConnectionHandler handler = new ConnectionHandler(connectionSocket);
 		handler.start();//cria  thread e começa a gestao da conexao com o start
 		
-		System.out.println("New client connection: "+ connection.getInetAddress().getHostName()); //endereço ip e o nome do host
+		System.out.println("-------------------------->New client connection: "+ connectionSocket.getInetAddress().getHostName()); //endereço ip e o nome do host
 		
 	}
 
-	private class ConnectionHandler extends Thread{
+	private class ConnectionHandler extends Thread{//classe anonima pra gerir socket
 		private Socket connection;
 		//LocalBoard boardLimpo1;
 		//LocalBoard boardSujo1=board;
-		ObjectInputStream boardSujo;
-		ObjectOutputStream boardLimpo;
+		//private ObjectInputStream boardSujo;
+		//private ObjectOutputStream boardLimpo;
+		private PrintWriter boardLimpo;
+		private Scanner boardPotencialmenteSujo; //pode tar sujo ou nao, depende das coordenadas q cliente envia
 		
 		public ConnectionHandler(Socket connection) {
 			this.connection=connection;
-}
+		}
 		
 		
-		//para ir buscar o board
+		//para ir buscar oq ta a ser comunicado entre canais
+		private void getStreamChannel() throws IOException {
+			//Atualizacao/limpeza do board aqui
+			boardLimpo=new PrintWriter(connection.getOutputStream(),true);
+				//true-> autoflush= toda vez q gerar 1 msg (ActionResult) n vai esperar o buffer ficar cheio pra enviar, mas envia sim automaticamente
+				//no ObjectOutputStream preciso mesmo de indicar ***
+				
+			//Aqui leitura do board recebido
+			boardPotencialmenteSujo=new Scanner(connection.getInputStream());
+		}
+		
+		
+		//enquanto jogo nao termina vai haver esta comunicacao
 		private void processConnection() throws IOException{ //pode n ter nd pra ler/mandar
 
 			do {
-				//leitura do board sujo com obstaculos cobras mortas etc
-				BoardPosition position;
-				try {
-					position = (BoardPosition)boardSujo.readObject(); //readObject lanca excecao
+				//leitura de potencial coordenada do board suja q pode ter obstaculos cobras mortas etc
+				String pos;
+				//BoardPosition position;
+				
+				//try {
+				
+					pos=boardPotencialmenteSujo.nextLine(); //deteta separador automaticamente
+					//position = (BoardPosition)boardPotencialmenteSujo.readObject(); //readObject lanca excecao
+					//excecao ClassNotFoundException e
 					
 					//aqui se o cliente entretanto mover //Espera!! posso criar uma thread dedicada pra fzr esta espera
-					action = handlePosition(position);
-					
+					//action = handlePosition(position);
+					action = handlePosition(pos);
+
 					//aqui tem q fzr eco do board pros outros clientes
-					boardLimpo.writeObject(action);
-					boardLimpo.flush(); //***
+					
+					boardLimpo.println(action.toString());
+					//boardLimpo.writeObject(action);
+					//boardLimpo.flush(); //***
 					System.out.println("TESTE do board que cliente mandou ");
 					
 					
-				} catch (ClassNotFoundException e) {
+			/*	} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} 
+				} */
 				
 				if (action.isGameEnded()) {
-					gameOverTemp=true;
+					gameOver=true;
                   }
 				
-			} while(!gameOverTemp); //enquanto nao ha gameOver
+			} while(!gameOver); //enquanto nao ha gameOver
 		}
 		
-		private void getBoardUpdates() throws IOException {
-			//Atualizacao/limpeza do board aqui
-			boardLimpo=new ObjectOutputStream(connection.getOutputStream());//aqui nao leva true
-				// no PrintWriter tinha true-> autoflush= toda vez q escrever 1 msg n vou esperar o buffer ficar cheio pra enviar, mas eu envio sim automaticamente
-				//neste preciso mesmo de indicar ***
-				
-			//Aqui leitura do board recebido
-			boardSujo=new ObjectInputStream(connection.getInputStream());
-		}
 		
-	private ActionResult handlePosition(BoardPosition position) {
+	private ActionResult handlePosition(String position) {
+	//private ActionResult handlePosition(BoardPosition position) {
 
-		Cell cell=board.getCell(position);
+		//new
+		String [] coordinates=position.split(",");
+		int x=Integer.parseInt(coordinates[0]);
+		int y=Integer.parseInt(coordinates[1]);
+		BoardPosition pos=new BoardPosition(x,y);
+		
+		
+		Cell cell=board.getCell(pos);
 		boolean wasSuccessful=false;
 			
 		if (cell.isOcupiedByObstacle()) {
@@ -129,23 +154,26 @@ public class Server {
 		return new ActionResult(wasSuccessful, gameEnded);
 	}
 		
-		private void closeConnection() {
-			try {
-				if(boardSujo !=null)//quando fecho o board?
-					boardSujo.close();
-				if(boardLimpo!=null)
-					boardLimpo.close();
-				if(connection !=null)
-					connection.close();
-			}catch (IOException e) {
+	
+	private void closeConnection() {
+		try {
+			if(boardPotencialmenteSujo !=null)//quando fecho o board?
+				boardPotencialmenteSujo.close();
+			if(boardLimpo!=null)
+				boardLimpo.close();	
+			if(connection !=null)
+				connection.close();
+		}catch (IOException e) {
 				e.printStackTrace();
-			}
 		}
+	}
+		
+		
 		@Override
 		public void run() {
-			//1. getBoard
+			//1. getposicoes e comunicacao
 			try {
-				getBoardUpdates();
+				getStreamChannel();
 				//2. processConnection
 				processConnection();
 			}catch(IOException e) {

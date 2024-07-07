@@ -22,7 +22,7 @@ public class Client {
 	ObjectInputStream boardSujo;
 	ObjectOutputStream boardLimpo;
 	
-	private Socket connection;
+	private Socket connectionSocket;
 	
 	public Client (InetAddress byName, int i) {
 		this.ipAddress=byName;
@@ -32,7 +32,7 @@ public class Client {
 	public void runClient() {
 		//1. connect to server
 		try {
-			connection= new Socket(ipAddress,port);
+			connectionSocket= new Socket(ipAddress,port);
 			
 			//2. get board updates - communication
 			getBoardUpdates();
@@ -55,8 +55,8 @@ public class Client {
 				boardSujo.close();
 			if(boardLimpo!=null)
 				boardLimpo.close();
-			if(connection !=null)
-				connection.close();
+			if(connectionSocket !=null)
+				connectionSocket.close();
 		}catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -124,12 +124,12 @@ public class Client {
 		
 		private void getBoardUpdates() throws IOException {
 			//Atualizacao/limpeza do board aqui
-			boardLimpo=new ObjectOutputStream(connection.getOutputStream());//aqui nao leva true
+			boardLimpo=new ObjectOutputStream(connectionSocket.getOutputStream());//aqui nao leva true
 				// no PrintWriter tinha true-> autoflush= toda vez q escrever 1 msg n vou esperar o buffer ficar cheio pra enviar, mas eu envio sim automaticamente
 				//neste preciso mesmo de indicar ***
 			boardLimpo.flush();
 			//Aqui leitura do board recebido
-			boardSujo=new ObjectInputStream(connection.getInputStream());
+			boardSujo=new ObjectInputStream(connectionSocket.getInputStream());
 	
 		}
 		

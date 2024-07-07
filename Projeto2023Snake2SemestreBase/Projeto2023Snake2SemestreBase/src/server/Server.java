@@ -36,17 +36,14 @@ public class Server {
 		//1. create serversocket
 		try {
 			server= new ServerSocket(SERVER_PORT,NUM_CONNECTS); //port need to be grater than 1024
-		while(true) {
-			//2. waiting for connections
-				waitForConnections();
-		}
-	} catch (IOException e) {
+			while(true) {
+				//2. waiting for connections
+					waitForConnections();
+			}
+		} catch (IOException e) {
 		e.printStackTrace();
 
-	}	
-		finally {
-			
-		}
+		}	
 	}
 
 	//esperar por conexoes e' criar socket aceite pelo server
@@ -171,7 +168,7 @@ public class Server {
 					System.out.println("Snake to remove");
 					lock.lock();
 					try {
-					cell.removeSnake(cell.getOcuppyingSnake()); //esta parte coordenacao
+						cell.removeSnake(cell.getOcuppyingSnake()); //esta parte coordenacao
 					}finally {
 						lock.unlock();
 					}

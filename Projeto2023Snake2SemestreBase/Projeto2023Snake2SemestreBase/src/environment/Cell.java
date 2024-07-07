@@ -250,18 +250,21 @@ public class Cell implements Comparable<Cell>{//meti implements comaprable
 		// TODO
 		lockC.lock();
 		try {
-			LinkedList<Cell> cells=snake.getCells();
-			snake.getCells().clear();
-			gameElement = null;
+			//LinkedList<Cell> cells=snake.getCells(); //nao modificar cells diretamente, em vez disso modificar copia
+			LinkedList<Cell> cells=new LinkedList<Cell>(snake.getCells()); //desta forma e nao da de cima^
+			//	snake.getCells().clear();
+		//	ocuppyingSnake = null;
 			//mas e as outras celulas?
-			for (Cell cell : cells) {
+			for (Cell cell : cells) { //nao posso ir iterando e removendo da lista senao dps da erro aqui
+				cell.lockC.lock();
 				try {
 					cell.release();
-					cellDeoccupied.signalAll();
 					System.out.println("Snake removed from "+cell.getPosition()+"____ | "+this.getClass());
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				}finally {
+					cell.lockC.unlock();
 				}
 			}
 		}finally {

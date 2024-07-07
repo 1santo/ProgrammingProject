@@ -14,7 +14,8 @@ import environment.Cell;
 import remote.ActionResult;
 
 public class Server {
-	public static final int SERVER_PORT =8088;
+
+	public static final int SERVER_PORT =8084;
 	public static final int NUM_CONNECTS=30;
 	
 	private Board board;//
@@ -119,8 +120,10 @@ public class Server {
 							
 								//new
 								String [] coordinates=position.split(",");
-								int x=Integer.parseInt(coordinates[0]);
-								int y=Integer.parseInt(coordinates[1]);
+								int x=1;
+								int y=4;
+								//int x=Integer.parseInt(coordinates[0]); //problematic
+								//int y=Integer.parseInt(coordinates[1]); //problematic
 								BoardPosition pos=new BoardPosition(x,y);
 								
 								
@@ -129,11 +132,11 @@ public class Server {
 									
 								if (cell.isOcupiedByObstacle()) {
 									System.out.println("Obstacle to remove");
-									cell.removeObstacle();
+//									cell.removeObstacle(); //coordenacao?
 									wasSuccessful = true;
 								} else if (cell.isOcupiedBySnake() && cell.getOcuppyingSnake().wasKilled()) {
 									System.out.println("Snake to remove");
-									cell.removeSnake(cell.getOcuppyingSnake());
+									cell.removeSnake(cell.getOcuppyingSnake()); //esta parte coordenacao
 									wasSuccessful = true;
 								}
 									boolean gameEnded = board.isFinished();
@@ -148,10 +151,10 @@ public class Server {
 
 					//aqui tem q fzr eco do board pros outros clientes
 					
-					boardLimpo.println(action.toString());
+					boardLimpo.println(action.toString()); //problematic
 					//boardLimpo.writeObject(action);
 					//boardLimpo.flush(); //***
-					System.out.println("TESTE do board que cliente mandou ");
+					System.out.println("TESTE do que cliente mandou ");
 					
 					
 			/*	} catch (ClassNotFoundException e) {
@@ -161,6 +164,7 @@ public class Server {
 				
 				if (action.isGameEnded()) {
 					gameOver=true;
+					System.out.println("XXXXXXXXXXXXXXXXXX_GAME OVER_XXXXXXXXXXXXXXXXXXX");
                   }
 				
 			} while(!gameOver); //enquanto nao ha gameOver

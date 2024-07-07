@@ -28,6 +28,7 @@ public class Client {
 	private Scanner boardLimpo;
 	private PrintWriter boardPotencialmenteSujo;
 	private Socket connectionSocket;
+	private boolean GameOver=false;
 	
 	public Client (InetAddress byName, int i) {
 		this.ipAddress=byName;
@@ -86,17 +87,24 @@ public class Client {
 		//para ir buscar oq ta a ser comunicado entre canais
 		private void processConnection(){
 		
+			try {
 			//new
-			while(true) {
+			while(!GameOver) {
 			Random random = new Random();
 			String randomX = String.valueOf(random.nextInt(Board.WIDTH));
 			String randomY = String.valueOf(random.nextInt(Board.HEIGHT));
 			String coordinates = "("+randomX+","+randomY+")";
-			
 			boardPotencialmenteSujo.println(coordinates);
 			
-			//action=boardPotencialmenteSujo.;
 			
+			//ler do server
+			//new
+			if(boardLimpo.hasNextLine()) {
+				
+			String seeRespostaActionServer=boardLimpo.nextLine();
+			action=ActionResult.fromString(seeRespostaActionServer);
+			
+			//\\
 				if(action.wasSuccessful()){
 					System.out.println("Elemento removido na pos: "+coordinates);
 				} else{
@@ -104,16 +112,21 @@ public class Client {
 				}
 
 				if(action.isGameEnded()){
+					GameOver=true;
 					System.out.println("Game over");
 					break;
 				}
-
+			}
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} //um tempinho pra ir removendo 
+			}
+			
+			}finally {
+				closeConnection();
 			}
 			
 			/*try {
@@ -154,7 +167,7 @@ public class Client {
 	
 	public static void main(String [] args) throws UnknownHostException {
 		
-		Client client= new Client(InetAddress.getByName("localhost"), 8088); //127.0.0.1 e o endereco do localhost
+		Client client= new Client(InetAddress.getByName("localhost"), 8084); //127.0.0.1 e o endereco do localhost
 		client.runClient();
 		System.out.println(client+" just joined*********************************");
 	} 
